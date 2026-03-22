@@ -5,16 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { ModeToggle } from '../mode-toggle';
 import { LanguageSwitcher } from '../language-switcher';
 import Text from '../custom-ui/text';
-import { 
-    Sparkles, 
-    CreditCard, 
-    BookOpen, 
-    Newspaper, 
-    LogIn, 
+import {
+    Sparkles,
+    CreditCard,
+    BookOpen,
+    Newspaper,
+    LogIn,
     UserPlus,
     BarChart3,
     Settings,
-    HelpCircle
+    HelpCircle,
+    Presentation
 } from 'lucide-react';
 
 export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, handleClose: () => void }) {
@@ -24,6 +25,7 @@ export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, hand
         {
             title: t("nav.main"),
             items: [
+                { to: "/slides", label: t("nav.slides"), icon: <Presentation className="w-4 h-4" /> },
                 { to: "/features", label: t("nav.features"), icon: <Sparkles className="w-4 h-4" /> },
                 { to: "/pricing", label: t("nav.pricing"), icon: <CreditCard className="w-4 h-4" /> },
                 { to: "/docs", label: t("nav.docs"), icon: <BookOpen className="w-4 h-4" /> },
