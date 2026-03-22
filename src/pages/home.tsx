@@ -402,13 +402,13 @@ export default function Home() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="flex flex-wrap gap-2 justify-center mb-6"
+                            className="flex gap-2 justify-center mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent py-2"
                         >
                             {decks.map((d) => (
                                 <button
                                     key={d.id}
                                     onClick={() => handleSetActive(d.id)}
-                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border shrink-0 ${
                                         d.id === activeDeckId
                                             ? "bg-primary text-primary-foreground border-primary"
                                             : "bg-card text-muted-foreground border-border hover:border-primary/50"
