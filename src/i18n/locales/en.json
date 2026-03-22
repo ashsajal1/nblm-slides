@@ -42,7 +42,7 @@
     "answer": "Answer",
     "showAnswer": "Show Answer",
     "showQuestion": "Show Question",
-    "keyboardHint": "Use ← → to change slides, Space to show answer",
+    "keyboardHint": "Use ← → or swipe to change slides, Space to flip card",
     "clickToFlip": "Click to flip",
     "uploadCsv": "Upload CSV",
     "invalidCsv": "Invalid CSV format. Expected columns: Question and Answer.",

@@ -59,6 +59,18 @@ const slideVariants = {
     }),
 };
 
+const swipeVariants = {
+    enter: (direction: number) => ({
+        y: direction > 0 ? 400 : -400,
+        opacity: 0,
+    }),
+    center: { y: 0, opacity: 1 },
+    exit: (direction: number) => ({
+        y: direction < 0 ? 400 : -400,
+        opacity: 0,
+    }),
+};
+
 function parseCSV(
     text: string,
     filename: string
@@ -108,6 +120,7 @@ export default function Home() {
     const [activeDeckId, setActiveId] = useState<string | null>(null);
     const [current, setCurrent] = useState(0);
     const [direction, setDirection] = useState(0);
+    const [swipeDirection, setSwipeDirection] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
@@ -307,6 +320,20 @@ export default function Home() {
         [slides.length]
     );
 
+    const paginateVertical = useCallback(
+        (newDirection: number) => {
+            setShowAnswer(false);
+            setSwipeDirection(newDirection);
+            setCurrent((prev) => {
+                const next = prev + newDirection;
+                if (next < 0) return slides.length - 1;
+                if (next >= slides.length) return 0;
+                return next;
+            });
+        },
+        [slides.length]
+    );
+
     useEffect(() => {
         const handleKey = (e: KeyboardEvent) => {
             if (e.key === "ArrowRight" || e.key === "ArrowDown") paginate(1);
@@ -480,60 +507,92 @@ export default function Home() {
                                 />
                             </div>
 
-                            {/* Flip card container */}
-                            <div
-                                className="relative w-full h-[340px] perspective-1000 cursor-pointer"
-                                onClick={() => setShowAnswer(!showAnswer)}
-                            >
-                                <motion.div
-                                    key={`${activeDeckId}-${current}`}
-                                    className="relative w-full h-full preserve-3d transition-transform duration-500"
-                                    style={{
-                                        transformStyle: "preserve-3d",
-                                        transform: showAnswer ? "rotateY(180deg)" : "rotateY(0deg)",
-                                    }}
+                            {/* Flip card container with swipe */}
+                            <div className="relative w-full h-[340px] perspective-1000">
+                                <AnimatePresence
+                                    initial={false}
+                                    custom={swipeDirection}
+                                    mode="wait"
                                 >
-                                    {/* Front - Question */}
-                                    <div className="absolute w-full h-full backface-hidden rounded-2xl border bg-card shadow-lg p-8 flex flex-col items-center justify-center">
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="flex items-center gap-2 text-primary">
-                                                <HelpCircle className="h-6 w-6" />
-                                                <span className="text-sm font-semibold uppercase tracking-wider">
-                                                    {t("home.question")}
-                                                </span>
-                                            </div>
-                                            <h2 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed text-center">
-                                                {slides[current]?.question}
-                                            </h2>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground mt-4">
-                                            {t("home.clickToFlip")}
-                                        </p>
-                                    </div>
-
-                                    {/* Back - Answer (flipped 180°) */}
-                                    <div
-                                        className="absolute w-full h-full backface-hidden rounded-2xl border bg-primary/10 shadow-lg p-8 flex flex-col items-center justify-center"
-                                        style={{
-                                            transform: "rotateY(180deg)",
+                                    <motion.div
+                                        key={`${activeDeckId}-${current}-swipe`}
+                                        custom={swipeDirection}
+                                        variants={swipeVariants}
+                                        initial="enter"
+                                        animate="center"
+                                        exit="exit"
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 300,
+                                            damping: 30,
                                         }}
+                                        drag="y"
+                                        dragConstraints={{ top: 0, bottom: 0 }}
+                                        dragElastic={1}
+                                        onDragEnd={(e, info) => {
+                                            if (info.offset.y > 100) {
+                                                paginateVertical(-1);
+                                            } else if (info.offset.y < -100) {
+                                                paginateVertical(1);
+                                            }
+                                        }}
+                                        className="relative w-full h-full"
                                     >
-                                        <div className="flex flex-col items-center gap-3">
-                                            <div className="flex items-center gap-2 text-primary">
-                                                <Lightbulb className="h-6 w-6" />
-                                                <span className="text-sm font-semibold uppercase tracking-wider">
-                                                    {t("home.answer")}
-                                                </span>
-                                            </div>
-                                            <p className="text-lg md:text-xl font-semibold text-foreground text-center">
-                                                {slides[current]?.answer}
-                                            </p>
+                                        <div
+                                            className="relative w-full h-full perspective-1000 cursor-pointer"
+                                            onClick={() => setShowAnswer(!showAnswer)}
+                                        >
+                                            <motion.div
+                                                className="relative w-full h-full preserve-3d transition-transform duration-500"
+                                                style={{
+                                                    transformStyle: "preserve-3d",
+                                                    transform: showAnswer ? "rotateY(180deg)" : "rotateY(0deg)",
+                                                }}
+                                            >
+                                                {/* Front - Question */}
+                                                <div className="absolute w-full h-full backface-hidden rounded-2xl border bg-card shadow-lg p-8 flex flex-col items-center justify-center">
+                                                    <div className="flex flex-col items-center gap-3">
+                                                        <div className="flex items-center gap-2 text-primary">
+                                                            <HelpCircle className="h-6 w-6" />
+                                                            <span className="text-sm font-semibold uppercase tracking-wider">
+                                                                {t("home.question")}
+                                                            </span>
+                                                        </div>
+                                                        <h2 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed text-center">
+                                                            {slides[current]?.question}
+                                                        </h2>
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground mt-4">
+                                                        {t("home.clickToFlip")}
+                                                    </p>
+                                                </div>
+
+                                                {/* Back - Answer (flipped 180°) */}
+                                                <div
+                                                    className="absolute w-full h-full backface-hidden rounded-2xl border bg-primary/10 shadow-lg p-8 flex flex-col items-center justify-center"
+                                                    style={{
+                                                        transform: "rotateY(180deg)",
+                                                    }}
+                                                >
+                                                    <div className="flex flex-col items-center gap-3">
+                                                        <div className="flex items-center gap-2 text-primary">
+                                                            <Lightbulb className="h-6 w-6" />
+                                                            <span className="text-sm font-semibold uppercase tracking-wider">
+                                                                {t("home.answer")}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-lg md:text-xl font-semibold text-foreground text-center">
+                                                            {slides[current]?.answer}
+                                                        </p>
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground mt-4">
+                                                        {t("home.clickToFlip")}
+                                                    </p>
+                                                </div>
+                                            </motion.div>
                                         </div>
-                                        <p className="text-sm text-muted-foreground mt-4">
-                                            {t("home.clickToFlip")}
-                                        </p>
-                                    </div>
-                                </motion.div>
+                                    </motion.div>
+                                </AnimatePresence>
                             </div>
 
                             {/* Navigation */}
