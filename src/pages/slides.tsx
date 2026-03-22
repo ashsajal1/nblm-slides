@@ -239,7 +239,7 @@ export default function SlidesPage() {
                                 স্লাইডস
                             </h1>
                             <p className="text-muted-foreground mt-1">
-                                {decks.length} ডেক — {decks.reduce((acc, d) => acc + d.slides.length, 0)} স্লাইড
+                                {decks.length} ডেক — {decks.reduce((acc, d) => acc + (Array.isArray(d.slides) ? d.slides.length : 0), 0)} স্লাইড
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -371,7 +371,7 @@ export default function SlidesPage() {
                                         </div>
                                     </div>
                                     <div className="text-sm text-muted-foreground">
-                                        {deck.slides.length} স্লাইড
+                                        {Array.isArray(deck.slides) ? deck.slides.length : 0} স্লাইড
                                     </div>
                                 </motion.div>
                             ))}
