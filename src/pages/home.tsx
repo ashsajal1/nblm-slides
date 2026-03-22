@@ -1,10 +1,16 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
-import { useAppDispatch, useAppSelector } from "@/lib/store";
-import { addDeck, removeDeck, setActiveDeck, clearUploadError, FlashcardDeck } from "@/lib/store/slices/flashcardsSlice";
+import {
+    getAllDecks,
+    saveDeck,
+    deleteDeck as dbDeleteDeck,
+    getActiveDeckId,
+    setActiveDeckId,
+    type FlashcardDeck,
+} from "@/lib/db/indexedDB";
 import {
     ChevronLeft,
     ChevronRight,
@@ -28,12 +34,20 @@ const slideVariants = {
     }),
 };
 
-function parseCSV(text: string, filename: string): { slides: { question: string; answer: string }[]; name: string } | null {
+function parseCSV(
+    text: string,
+    filename: string
+): { slides: { question: string; answer: string }[]; name: string } | null {
     const lines = text.split(/\r?\n/).filter((l) => l.trim());
     if (lines.length < 2) return null;
 
     const header = lines[0];
-    if (!header.includes("问题") && !header.includes("প্রশ্ন") && !header.includes("Question")) return null;
+    if (
+        !header.includes("问题") &&
+        !header.includes("প্রশ্ন") &&
+        !header.includes("Question")
+    )
+        return null;
 
     const slides: { question: string; answer: string }[] = [];
     for (let i = 1; i < lines.length; i++) {
@@ -53,44 +67,63 @@ function parseCSV(text: string, filename: string): { slides: { question: string;
 
     if (slides.length === 0) return null;
 
-    const name = filename.replace(/\.csv$/i, "").replace(/_/g, " ").trim();
+    const name = filename
+        .replace(/\.csv$/i, "")
+        .replace(/_/g, " ")
+        .trim();
 
     return { slides, name };
 }
 
 export default function Home() {
-    const dispatch = useAppDispatch();
-    const { decks, activeDeckId } = useAppSelector((s) => s.flashcards);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const [decks, setDecks] = useState<FlashcardDeck[]>([]);
+    const [activeDeckId, setActiveId] = useState<string | null>(null);
     const [current, setCurrent] = useState(0);
     const [direction, setDirection] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    const activeDeck = useMemo(
-        () => decks.find((d) => d.id === activeDeckId) ?? null,
-        [decks, activeDeckId]
-    );
+    useEffect(() => {
+        async function load() {
+            try {
+                const [allDecks, activeId] = await Promise.all([
+                    getAllDecks(),
+                    getActiveDeckId(),
+                ]);
+                setDecks(allDecks);
+                setActiveId(activeId);
+            } finally {
+                setLoading(false);
+            }
+        }
+        load();
+    }, []);
 
+    const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = activeDeck?.slides ?? [];
 
     const handleFileUpload = useCallback(
-        (file: File) => {
+        async (file: File) => {
             setUploadError(null);
-            dispatch(clearUploadError());
 
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 const text = e.target?.result as string;
                 const result = parseCSV(text, file.name);
 
                 if (!result || result.slides.length === 0) {
-                    setUploadError("Invalid CSV format. Expected columns: প্রশ্ন (question) and উত্তর (answer).");
+                    setUploadError(
+                        "Invalid CSV format. Expected columns: প্রশ্ন (question) and উত্তর (answer)."
+                    );
                     return;
                 }
 
-                const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+                const id = `${Date.now()}-${Math.random()
+                    .toString(36)
+                    .slice(2, 8)}`;
                 const deck: FlashcardDeck = {
                     id,
                     name: result.name,
@@ -98,14 +131,21 @@ export default function Home() {
                     createdAt: Date.now(),
                 };
 
-                dispatch(addDeck(deck));
-                dispatch(setActiveDeck(id));
+                await saveDeck(deck);
+                await setActiveDeckId(id);
+
+                const [allDecks] = await Promise.all([
+                    getAllDecks(),
+                    setActiveDeckId(id),
+                ]);
+                setDecks(allDecks);
+                setActiveId(id);
                 setCurrent(0);
                 setShowAnswer(false);
             };
             reader.readAsText(file);
         },
-        [dispatch]
+        []
     );
 
     const handleDrop = useCallback(
@@ -119,6 +159,32 @@ export default function Home() {
             }
         },
         [handleFileUpload]
+    );
+
+    const handleDeleteDeck = useCallback(
+        async (id: string) => {
+            await dbDeleteDeck(id);
+            const allDecks = await getAllDecks();
+            setDecks(allDecks);
+            if (activeDeckId === id) {
+                const nextId = allDecks[0]?.id ?? null;
+                await setActiveDeckId(nextId);
+                setActiveId(nextId);
+                setCurrent(0);
+                setShowAnswer(false);
+            }
+        },
+        [activeDeckId]
+    );
+
+    const handleSetActive = useCallback(
+        async (id: string) => {
+            await setActiveDeckId(id);
+            setActiveId(id);
+            setCurrent(0);
+            setShowAnswer(false);
+        },
+        []
     );
 
     const paginate = useCallback(
@@ -156,7 +222,10 @@ export default function Home() {
         setCurrent(0);
     }, [activeDeckId]);
 
-    const progress = slides.length > 0 ? ((current + 1) / slides.length) * 100 : 0;
+    const progress =
+        slides.length > 0 ? ((current + 1) / slides.length) * 100 : 0;
+
+    if (loading) return null;
 
     return (
         <>
@@ -202,7 +271,7 @@ export default function Home() {
                             {decks.map((d) => (
                                 <button
                                     key={d.id}
-                                    onClick={() => dispatch(setActiveDeck(d.id))}
+                                    onClick={() => handleSetActive(d.id)}
                                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors border ${
                                         d.id === activeDeckId
                                             ? "bg-primary text-primary-foreground border-primary"
@@ -210,12 +279,14 @@ export default function Home() {
                                     }`}
                                 >
                                     <span>{d.name}</span>
-                                    <span className="text-xs opacity-60">({d.slides.length})</span>
+                                    <span className="text-xs opacity-60">
+                                        ({d.slides.length})
+                                    </span>
                                     <Trash2
                                         className="h-3.5 w-3.5 shrink-0 hover:text-destructive"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            dispatch(removeDeck(d.id));
+                                            handleDeleteDeck(d.id);
                                         }}
                                     />
                                 </button>
@@ -286,7 +357,11 @@ export default function Home() {
                             </div>
 
                             <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg min-h-[340px] flex items-center justify-center p-8">
-                                <AnimatePresence initial={false} custom={direction} mode="wait">
+                                <AnimatePresence
+                                    initial={false}
+                                    custom={direction}
+                                    mode="wait"
+                                >
                                     <motion.div
                                         key={`${activeDeckId}-${current}`}
                                         custom={direction}
@@ -294,7 +369,11 @@ export default function Home() {
                                         initial="enter"
                                         animate="center"
                                         exit="exit"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 300,
+                                            damping: 30,
+                                        }}
                                         className="w-full text-center space-y-8"
                                     >
                                         <div className="flex flex-col items-center gap-3">
@@ -313,7 +392,9 @@ export default function Home() {
                                             <Button
                                                 size="lg"
                                                 variant="outline"
-                                                onClick={() => setShowAnswer(true)}
+                                                onClick={() =>
+                                                    setShowAnswer(true)
+                                                }
                                                 className="text-base"
                                             >
                                                 <Lightbulb className="mr-2 h-5 w-5" />
@@ -355,12 +436,19 @@ export default function Home() {
                                 <div className="flex gap-1.5 max-w-[280px] overflow-hidden items-center">
                                     {slides.map((_, i) => {
                                         const dist = Math.abs(i - current);
-                                        if (dist > 4 && i !== 0 && i !== slides.length - 1) return null;
+                                        if (
+                                            dist > 4 &&
+                                            i !== 0 &&
+                                            i !== slides.length - 1
+                                        )
+                                            return null;
                                         return (
                                             <button
                                                 key={i}
                                                 onClick={() => {
-                                                    setDirection(i > current ? 1 : -1);
+                                                    setDirection(
+                                                        i > current ? 1 : -1
+                                                    );
                                                     setCurrent(i);
                                                 }}
                                                 className={`h-2.5 w-2.5 rounded-full transition-all shrink-0 ${
@@ -388,7 +476,6 @@ export default function Home() {
                             </p>
                         </>
                     ) : (
-                        /* Empty state */
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -403,8 +490,9 @@ export default function Home() {
                                 CSV ফাইল আপলোড করুন
                             </h2>
                             <p className="text-muted-foreground max-w-md mx-auto">
-                                CSV ফাইলে <strong>প্রশ্ন</strong> ও <strong>উত্তর</strong> কলাম থাকতে হবে।
-                                ফাইলটি টেনে আনুন বা বাটনে ক্লিক করুন।
+                                CSV ফাইলে <strong>প্রশ্ন</strong> ও{" "}
+                                <strong>উত্তর</strong> কলাম থাকতে হবে। ফাইলটি
+                                টেনে আনুন বা বাটনে ক্লিক করুন।
                             </p>
                         </motion.div>
                     )}

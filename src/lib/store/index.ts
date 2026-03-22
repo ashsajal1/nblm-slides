@@ -5,20 +5,17 @@ import storage from 'redux-persist/lib/storage';
 import userPreferencesReducer from './slices/userPreferencesSlice';
 import authReducer from './slices/authSlice';
 import uiReducer from './slices/uiSlice';
-import flashcardsReducer from './slices/flashcardsSlice';
-
 const rootReducer = combineReducers({
   userPreferences: userPreferencesReducer,
   auth: authReducer,
   ui: uiReducer,
-  flashcards: flashcardsReducer,
 });
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['userPreferences', 'auth', 'flashcards'],
+  whitelist: ['userPreferences', 'auth'],
   blacklist: ['ui'],
 };
 
