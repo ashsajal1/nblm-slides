@@ -465,66 +465,70 @@ export default function SlidesPage() {
                             </div>
 
                             {/* Slideshow */}
-                            <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg min-h-[300px] flex items-center justify-center p-8">
-                                <AnimatePresence initial={false} custom={direction} mode="wait">
-                                    <motion.div
-                                        key={`${activeDeck.id}-${current}`}
-                                        custom={direction}
-                                        variants={slideVariants}
-                                        initial="enter"
-                                        animate="center"
-                                        exit="exit"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                        className="w-full text-center space-y-6"
-                                    >
-                                        <div className="flex flex-col items-center gap-3">
-                                            <h3 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
-                                                {slides[current]?.question}
-                                            </h3>
-                                        </div>
-                                        <button
-                                            onClick={() => setShowAnswer((s) => !s)}
-                                            className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
-                                        >
-                                            {showAnswer ? "প্রশ্ন দেখুন" : "উত্তর দেখুন"}
-                                        </button>
-                                        {showAnswer && (
+                            {slides.length > 0 && (
+                                <>
+                                    <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg min-h-[300px] flex items-center justify-center p-8">
+                                        <AnimatePresence initial={false} custom={direction} mode="wait">
                                             <motion.div
-                                                initial={{ opacity: 0, scale: 0.9 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                className="bg-primary/10 border border-primary/20 rounded-xl p-4"
+                                                key={`${activeDeck.id}-${current}`}
+                                                custom={direction}
+                                                variants={slideVariants}
+                                                initial="enter"
+                                                animate="center"
+                                                exit="exit"
+                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                                className="w-full text-center space-y-6"
                                             >
-                                                <p className="text-lg font-semibold text-foreground">
-                                                    {slides[current]?.answer}
-                                                </p>
+                                                <div className="flex flex-col items-center gap-3">
+                                                    <h3 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
+                                                        {slides[current]?.question}
+                                                    </h3>
+                                                </div>
+                                                <button
+                                                    onClick={() => setShowAnswer((s) => !s)}
+                                                    className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+                                                >
+                                                    {showAnswer ? "প্রশ্ন দেখুন" : "উত্তর দেখুন"}
+                                                </button>
+                                                {showAnswer && (
+                                                    <motion.div
+                                                        initial={{ opacity: 0, scale: 0.9 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        className="bg-primary/10 border border-primary/20 rounded-xl p-4"
+                                                    >
+                                                        <p className="text-lg font-semibold text-foreground">
+                                                            {slides[current]?.answer}
+                                                        </p>
+                                                    </motion.div>
+                                                )}
                                             </motion.div>
-                                        )}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </div>
+                                        </AnimatePresence>
+                                    </div>
 
-                            {/* Navigation */}
-                            <div className="flex items-center justify-center gap-6 mt-6">
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => paginate(-1)}
-                                    className="h-10 w-10 rounded-full"
-                                >
-                                    <ChevronLeft className="h-5 w-5" />
-                                </Button>
-                                <span className="text-sm text-muted-foreground">
-                                    {current + 1} / {slides.length}
-                                </span>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
-                                    onClick={() => paginate(1)}
-                                    className="h-10 w-10 rounded-full"
-                                >
-                                    <ChevronRight className="h-5 w-5" />
-                                </Button>
-                            </div>
+                                    {/* Navigation */}
+                                    <div className="flex items-center justify-center gap-6 mt-6">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => paginate(-1)}
+                                            className="h-10 w-10 rounded-full"
+                                        >
+                                            <ChevronLeft className="h-5 w-5" />
+                                        </Button>
+                                        <span className="text-sm text-muted-foreground">
+                                            {current + 1} / {slides.length}
+                                        </span>
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={() => paginate(1)}
+                                            className="h-10 w-10 rounded-full"
+                                        >
+                                            <ChevronRight className="h-5 w-5" />
+                                        </Button>
+                                    </div>
+                                </>
+                            )}
                         </>
                     )}
 
