@@ -103,7 +103,7 @@ export default function Home() {
     }, []);
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
-    const slides = activeDeck?.slides ?? [];
+    const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
 
     const handleFileUpload = useCallback(
         (file: File) => {
@@ -277,7 +277,7 @@ export default function Home() {
                                 >
                                     <span>{d.name}</span>
                                     <span className="text-xs opacity-60">
-                                        ({d.slides.length})
+                                        ({Array.isArray(d.slides) ? d.slides.length : 0})
                                     </span>
                                     <Trash2
                                         className="h-3.5 w-3.5 shrink-0 hover:text-destructive"
