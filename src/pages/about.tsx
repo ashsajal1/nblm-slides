@@ -7,36 +7,36 @@ import { ArrowRight, Target, Zap, Shield } from "lucide-react";
 const values = [
   {
     icon: <Target className="w-6 h-6" />,
-    title: "Our Mission",
-    description: "To empower businesses with innovative solutions that drive growth and success in the digital age."
+    title: "আমাদের লক্ষ্য",
+    description: "উদ্ভাবনী সমাধান দিয়ে ব্যবসায়িক প্রবৃদ্ধি ও সাফল্য নিশ্চিত করা।"
   },
   {
     icon: <Zap className="w-6 h-6" />,
-    title: "Innovation",
-    description: "We constantly push boundaries to deliver cutting-edge solutions that set new industry standards."
+    title: "উদ্ভাবন",
+    description: "আমরা সর্বদা শিল্পের মান নির্ধারণকারী অত্যাধুনিক সমাধান প্রদান করতে সীমানা ঠেলে যাই।"
   },
   {
     icon: <Shield className="w-6 h-6" />,
-    title: "Trust & Security",
-    description: "Your data security is our top priority. We maintain the highest standards of data protection."
+    title: "বিশ্বাস ও নিরাপত্তা",
+    description: "আপনার ডেটা নিরাপত্তা আমাদের সর্বোচ্চ অগ্রাধিকার। আমরা সর্বোচ্চ মানের ডেটা সুরক্ষা বজায় রাখি।"
   }
 ];
 
 const team = [
   {
-    name: "Sarah Johnson",
-    role: "CEO & Founder",
-    image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    name: "সারা আক্তার",
+    role: "সিইও ও প্রতিষ্ঠাতা",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
   },
   {
-    name: "Michael Chen",
-    role: "CTO",
-    image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    name: "মিশকাত হোসেন",
+    role: "সিটিও",
+    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
   },
   {
-    name: "Emily Rodriguez",
-    role: "Head of Product",
-    image: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+    name: "তানিয়া করিম",
+    role: "প্রোডাক্ট প্রধান",
+    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
   }
 ];
 
@@ -44,8 +44,8 @@ export default function About() {
   return (
     <>
       <Seo 
-        title="About Us | SaaSify" 
-        description="Learn about our mission, values, and the team behind SaaSify - your trusted partner in digital transformation." 
+        title="আমাদের সম্পর্কে | ফ্ল্যাশকার্ড" 
+        description="ফ্ল্যাশকার্ড - আপনার পছন্দের বিষয়ে সহজে অধ্যয়ন করুন।" 
       />
       
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -59,21 +59,21 @@ export default function About() {
                 transition={{ duration: 0.5 }}
               >
                 <Text 
-                  label="About Us" 
+                  label="আমাদের সম্পর্কে" 
                   className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6" 
                 />
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  Transforming Ideas into Digital Reality
+                  আপনার পছন্দের বিষয়ে শিখুন
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8">
-                  We're a team of passionate innovators dedicated to helping businesses thrive in the digital landscape.
+                  আমরা একটি দল যারা শিক্ষার্থীদের সহজে ও কার্যকরভাবে শেখাতে সাহায্য করতে নিবেদিত।
                 </p>
                 <Button 
                   size="lg"
                   className="relative overflow-hidden group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-primary/25 transition-all duration-300 text-primary-foreground"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Join Our Team
+                    আমাদের সাথে যোগ দিন
                     <ArrowRight className="w-4 h-4" />
                   </span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
@@ -115,10 +115,10 @@ export default function About() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                Meet Our Team
+                আমাদের দলের সাথে পরিচিত হন
               </h2>
               <p className="text-xl text-muted-foreground">
-                The passionate people behind our success
+                আমাদের সাফল্যের পেছনে নিবেদিত মানুষরা
               </p>
             </div>
             
@@ -157,17 +157,17 @@ export default function About() {
               className="max-w-3xl mx-auto text-center bg-card p-8 rounded-2xl shadow-sm"
             >
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                Ready to Transform Your Business?
+                আজই শুরু করুন?
               </h2>
               <p className="text-xl text-muted-foreground mb-8">
-                Join thousands of businesses already using our platform
+                হাজারো শিক্ষার্থী ইতিমধ্যে আমাদের ফ্ল্যাশকার্ড ব্যবহার করছে
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
                   className="relative overflow-hidden group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-primary/25 transition-all duration-300 text-primary-foreground"
                 >
-                  <span className="relative z-10">Get Started</span>
+                  <span className="relative z-10">শুরু করুন</span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 </Button>
                 <Button 
@@ -175,7 +175,7 @@ export default function About() {
                   variant="secondary"
                   className="relative overflow-hidden group bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary hover:shadow-lg transition-all duration-300 text-secondary-foreground"
                 >
-                  <span className="relative z-10">Contact Sales</span>
+                  <span className="relative z-10">যোগাযোগ করুন</span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 </Button>
               </div>

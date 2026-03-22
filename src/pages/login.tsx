@@ -38,18 +38,17 @@ export default function Login() {
             
             dispatch(addToast({
                 type: 'success',
-                message: 'Successfully logged in!',
+                message: 'সফলভাবে লগইন হয়েছে!',
             }));
 
             navigate('/dashboard');
         } catch (err) {
-            // Error is already handled by the thunk
         }
     };
 
     return (
         <>
-            <Seo title="Login | SaaSify" description="Login to your SaaSify account." />
+            <Seo title="লগইন | ফ্ল্যাশকার্ড" description="আপনার অ্যাকাউন্টে লগইন করুন।" />
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="w-full md:flex md:min-h-screen">
                     {/* Left side - Text content */}
@@ -60,12 +59,12 @@ export default function Login() {
                         className="hidden md:flex md:w-1/2 bg-primary/5 items-center justify-center p-8"
                     >
                         <div className="max-w-md text-center">
-                            <Text label="SaaSify" className="text-4xl font-bold text-primary mb-6" />
+                            <Text label="ফ্ল্যাশকার্ড" className="text-4xl font-bold text-primary mb-6" />
                             <h2 className="text-3xl font-semibold text-foreground mb-4">
-                                Welcome back to SaaSify
+                                ফ্ল্যাশকার্ডে স্বাগতম
                             </h2>
                             <p className="text-muted-foreground text-lg">
-                                Your all-in-one solution for managing your business. Sign in to access your dashboard and continue your journey.
+                                আপনার পছন্দের বিষয়ে ফ্ল্যাশকার্ড তৈরি করুন এবং সহজে অধ্যয়ন করুন। লগইন করে আপনার যাত্রা শুরু করুন।
                             </p>
                         </div>
                     </motion.div>
@@ -80,10 +79,10 @@ export default function Login() {
                         <div className="w-full max-w-md">
                             <div className="text-center mb-8 md:hidden">
                                 <Link to="/">
-                                    <Text label="SaaSify" className="text-3xl font-bold text-primary mb-2" />
+                                    <Text label="ফ্ল্যাশকার্ড" className="text-3xl font-bold text-primary mb-2" />
                                 </Link>
-                                <h2 className="text-2xl font-semibold text-foreground">Welcome back</h2>
-                                <p className="text-muted-foreground mt-2">Sign in to your account</p>
+                                <h2 className="text-2xl font-semibold text-foreground">স্বাগতম</h2>
+                                <p className="text-muted-foreground mt-2">আপনার অ্যাকাউন্টে লগইন করুন</p>
                             </div>
 
                             <div className="bg-card rounded-lg shadow-lg p-8">
@@ -100,7 +99,7 @@ export default function Login() {
                                     <div className="space-y-4">
                                         <div>
                                             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
-                                                Email address
+                                                ইমেইল
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -111,7 +110,7 @@ export default function Login() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="Enter your email" 
+                                                    placeholder="আপনার ইমেইল দিন" 
                                                     type="email" 
                                                     {...register('email')} 
                                                 />
@@ -132,14 +131,14 @@ export default function Login() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    Please enter a valid email address
+                                                    সঠিক ইমেইল দিন
                                                 </motion.p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-                                                Password
+                                                পাসওয়ার্ড
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -150,7 +149,7 @@ export default function Login() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="Enter your password" 
+                                                    placeholder="আপনার পাসওয়ার্ড দিন" 
                                                     type="password" 
                                                     {...register("password")} 
                                                 />
@@ -171,7 +170,7 @@ export default function Login() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    Password must be between 6 and 20 characters
+                                                    পাসওয়ার্ড ৬-২০ অক্ষরের মধ্যে হতে হবে
                                                 </motion.p>
                                             )}
                                         </div>
@@ -186,12 +185,12 @@ export default function Login() {
                                                 className="h-4 w-4 text-primary focus:ring-primary border-input rounded"
                                             />
                                             <label htmlFor="remember-me" className="ml-2 block text-sm text-muted-foreground">
-                                                Remember me
+                                                মনে রাখুন
                                             </label>
                                         </div>
 
                                         <Link to="/forgot-password" className="text-sm text-primary hover:text-primary/80">
-                                            Forgot password?
+                                            পাসওয়ার্ড ভুলে গেছেন?
                                         </Link>
                                     </div>
 
@@ -200,36 +199,16 @@ export default function Login() {
                                         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                                         disabled={loading}
                                     >
-                                        {loading ? 'Signing in...' : 'Sign in'}
+                                        {loading ? 'লগইন হচ্ছে...' : 'লগইন'}
                                     </Button>
 
-                                    <div className="relative my-6">
-                                        <div className="absolute inset-0 flex items-center">
-                                            <div className="w-full border-t border-border"></div>
-                                        </div>
-                                        <div className="relative flex justify-center text-sm">
-                                            <span className="px-2 bg-card text-muted-foreground">
-                                                Or continue with
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <Button variant="outline" className="w-full">
-                                            Google
-                                        </Button>
-                                        <Button variant="outline" className="w-full">
-                                            GitHub
-                                        </Button>
-                                    </div>
+                                    <p className="mt-6 text-center text-sm text-muted-foreground">
+                                        অ্যাকাউন্ট নেই?{' '}
+                                        <Link to="/signup" className="font-medium text-primary hover:text-primary/80">
+                                            এখনই সাইন আপ করুন
+                                        </Link>
+                                    </p>
                                 </form>
-
-                                <p className="mt-6 text-center text-sm text-muted-foreground">
-                                    Don't have an account?{' '}
-                                    <Link to="/signup" className="font-medium text-primary hover:text-primary/80">
-                                        Sign up now
-                                    </Link>
-                                </p>
                             </div>
                         </div>
                     </motion.div>

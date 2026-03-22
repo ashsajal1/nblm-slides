@@ -10,11 +10,11 @@ import Text from "@/components/custom-ui/text";
 import { motion } from "framer-motion";
 
 const schema = z.object({
-    email: z.string().email().nonempty("Email is required"),
-    password: z.string().min(6).max(20).nonempty("Password is required"),
+    email: z.string().email().nonempty("ইমেইল প্রয়োজন"),
+    password: z.string().min(6).max(20).nonempty("পাসওয়ার্ড প্রয়োজন"),
     confirmPassword: z.string().min(6).max(20),
 }).refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "পাসওয়ার্ড মিলছে না",
     path: ["confirmPassword"],
 });
 
@@ -33,7 +33,7 @@ export default function Signup() {
 
     return (
         <>
-            <Seo title="Signup | SaaSify" description="Create your SaaSify account." />
+            <Seo title="সাইন আপ | ফ্ল্যাশকার্ড" description="আপনার ফ্ল্যাশকার্ড অ্যাকাউন্ট তৈরি করুন।" />
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="w-full md:flex md:min-h-screen">
                     {/* Left side - Text content */}
@@ -44,12 +44,12 @@ export default function Signup() {
                         className="hidden md:flex md:w-1/2 bg-primary/5 items-center justify-center p-8"
                     >
                         <div className="max-w-md text-center">
-                            <Text label="SaaSify" className="text-4xl font-bold text-primary mb-6" />
+                            <Text label="ফ্ল্যাশকার্ড" className="text-4xl font-bold text-primary mb-6" />
                             <h2 className="text-3xl font-semibold text-foreground mb-4">
-                                Start your journey with SaaSify
+                                ফ্ল্যাশকার্ডে যাত্রা শুরু করুন
                             </h2>
                             <p className="text-muted-foreground text-lg">
-                                Join thousands of businesses that trust SaaSify for their daily operations. Create your account and transform your business today.
+                                আপনার পছন্দের বিষয়ে ফ্ল্যাশকার্ড তৈরি করুন এবং সহজে অধ্যয়ন করুন। আজই অ্যাকাউন্ট তৈরি করে শুরু করুন।
                             </p>
                         </div>
                     </motion.div>
@@ -64,10 +64,10 @@ export default function Signup() {
                         <div className="w-full max-w-md">
                             <div className="text-center mb-8 md:hidden">
                                 <Link to="/">
-                                    <Text label="SaaSify" className="text-3xl font-bold text-primary mb-2" />
+                                    <Text label="ফ্ল্যাশকার্ড" className="text-3xl font-bold text-primary mb-2" />
                                 </Link>
-                                <h2 className="text-2xl font-semibold text-foreground">Create your account</h2>
-                                <p className="text-muted-foreground mt-2">Join our growing community</p>
+                                <h2 className="text-2xl font-semibold text-foreground">অ্যাকাউন্ট তৈরি করুন</h2>
+                                <p className="text-muted-foreground mt-2">আমাদের সম্প্রদায়ে যোগ দিন</p>
                             </div>
 
                             <div className="bg-card rounded-lg shadow-lg p-8">
@@ -75,7 +75,7 @@ export default function Signup() {
                                     <div className="space-y-4">
                                         <div>
                                             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
-                                                Email address
+                                                ইমেইল
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -86,7 +86,7 @@ export default function Signup() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="Enter your email" 
+                                                    placeholder="আপনার ইমেইল দিন" 
                                                     type="email" 
                                                     {...register('email')} 
                                                 />
@@ -107,14 +107,14 @@ export default function Signup() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    Please enter a valid email address
+                                                    সঠিক ইমেইল দিন
                                                 </motion.p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-                                                Password
+                                                পাসওয়ার্ড
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -125,7 +125,7 @@ export default function Signup() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="Create a password" 
+                                                    placeholder="পাসওয়ার্ড তৈরি করুন" 
                                                     type="password" 
                                                     {...register("password")} 
                                                 />
@@ -146,14 +146,14 @@ export default function Signup() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    Password must be between 6 and 20 characters
+                                                    পাসওয়ার্ড ৬-২০ অক্ষরের মধ্যে হতে হবে
                                                 </motion.p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-1">
-                                                Confirm Password
+                                                পাসওয়ার্ড নিশ্চিত করুন
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -164,7 +164,7 @@ export default function Signup() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="Confirm your password" 
+                                                    placeholder="পাসওয়ার্ড আবার দিন" 
                                                     type="password" 
                                                     {...register("confirmPassword")} 
                                                 />
@@ -199,48 +199,29 @@ export default function Signup() {
                                             className="h-4 w-4 text-primary focus:ring-primary border-input rounded"
                                         />
                                         <label htmlFor="terms" className="ml-2 block text-sm text-muted-foreground">
-                                            I agree to the{' '}
+                                            আমি{' '}
                                             <Link to="/terms" className="text-primary hover:text-primary/80">
-                                                Terms of Service
+                                                সেবার শর্তাবলী
                                             </Link>{' '}
-                                            and{' '}
+                                            এবং{' '}
                                             <Link to="/privacy" className="text-primary hover:text-primary/80">
-                                                Privacy Policy
+                                                গোপনীয়তা নীতি
                                             </Link>
+                                            {' '}গ্রহণ করছি
                                         </label>
                                     </div>
 
                                     <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                                        Create account
+                                        অ্যাকাউন্ট তৈরি করুন
                                     </Button>
 
-                                    <div className="relative my-6">
-                                        <div className="absolute inset-0 flex items-center">
-                                            <div className="w-full border-t border-border"></div>
-                                        </div>
-                                        <div className="relative flex justify-center text-sm">
-                                            <span className="px-2 bg-card text-muted-foreground">
-                                                Or continue with
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <Button variant="outline" className="w-full">
-                                            Google
-                                        </Button>
-                                        <Button variant="outline" className="w-full">
-                                            GitHub
-                                        </Button>
-                                    </div>
+                                    <p className="mt-6 text-center text-sm text-muted-foreground">
+                                        ইতিমধ্যে অ্যাকাউন্ট আছে?{' '}
+                                        <Link to="/login" className="font-medium text-primary hover:text-primary/80">
+                                            লগইন করুন
+                                        </Link>
+                                    </p>
                                 </form>
-
-                                <p className="mt-6 text-center text-sm text-muted-foreground">
-                                    Already have an account?{' '}
-                                    <Link to="/login" className="font-medium text-primary hover:text-primary/80">
-                                        Sign in
-                                    </Link>
-                                </p>
                             </div>
                         </div>
                     </motion.div>

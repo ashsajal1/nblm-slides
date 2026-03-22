@@ -17,27 +17,27 @@ import {
 
 const menuItems = [
     {
-        title: "Main",
+        title: "মূল",
         items: [
-            { to: "/features", label: "Features", icon: <Sparkles className="w-4 h-4" /> },
-            { to: "/pricing", label: "Pricing", icon: <CreditCard className="w-4 h-4" /> },
-            { to: "/docs", label: "Documentation", icon: <BookOpen className="w-4 h-4" /> },
-            { to: "/blog", label: "Blog", icon: <Newspaper className="w-4 h-4" /> },
+            { to: "/features", label: "ফিচার", icon: <Sparkles className="w-4 h-4" /> },
+            { to: "/pricing", label: "মূল্য", icon: <CreditCard className="w-4 h-4" /> },
+            { to: "/docs", label: "ডকুমেন্টেশন", icon: <BookOpen className="w-4 h-4" /> },
+            { to: "/blog", label: "ব্লগ", icon: <Newspaper className="w-4 h-4" /> },
         ]
     },
     {
-        title: "Account",
+        title: "অ্যাকাউন্ট",
         items: [
-            { to: "/login", label: "Sign in", icon: <LogIn className="w-4 h-4" /> },
-            { to: "/signup", label: "Create account", icon: <UserPlus className="w-4 h-4" /> },
+            { to: "/login", label: "লগইন", icon: <LogIn className="w-4 h-4" /> },
+            { to: "/signup", label: "অ্যাকাউন্ট তৈরি", icon: <UserPlus className="w-4 h-4" /> },
         ]
     },
     {
-        title: "Resources",
+        title: "রিসোর্স",
         items: [
-            { to: "/analytics", label: "Analytics", icon: <BarChart3 className="w-4 h-4" /> },
-            { to: "/settings", label: "Settings", icon: <Settings className="w-4 h-4" /> },
-            { to: "/help", label: "Help Center", icon: <HelpCircle className="w-4 h-4" /> },
+            { to: "/analytics", label: "অ্যানালিটিক্স", icon: <BarChart3 className="w-4 h-4" /> },
+            { to: "/settings", label: "সেটিংস", icon: <Settings className="w-4 h-4" /> },
+            { to: "/help", label: "সাহায্য কেন্দ্র", icon: <HelpCircle className="w-4 h-4" /> },
         ]
     }
 ];
@@ -72,7 +72,7 @@ export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, hand
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.2 }}
                             >
-                                <Text className='text-xl font-bold text-primary' label='SaaSify' />
+                                <Text className='text-xl font-bold text-primary' label='ফ্ল্যাশকার্ড' />
                             </motion.div>
                             <div className="flex items-center gap-2">
                                 <motion.div

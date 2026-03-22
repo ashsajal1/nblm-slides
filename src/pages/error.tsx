@@ -6,7 +6,7 @@ import { Home, RefreshCw } from 'lucide-react';
 
 export default function ErrorPage() {
     const error = useRouteError();
-    let errorMessage = 'An unexpected error occurred';
+    let errorMessage = 'একটি অপ্রত্যাশিত ত্রুটি ঘটেছে';
     let errorStatus = 500;
 
     if (isRouteErrorResponse(error)) {
@@ -29,7 +29,7 @@ export default function ErrorPage() {
                 <div className="mb-8">
                     <h1 className="text-9xl font-bold text-primary mb-4">{errorStatus}</h1>
                     <h2 className="text-2xl font-semibold text-foreground mb-4">
-                        {errorStatus === 404 ? 'Page Not Found' : 'Something went wrong'}
+                        {errorStatus === 404 ? 'পৃষ্ঠা পাওয়া যায়নি' : 'কিছু ভুল হয়েছে'}
                     </h2>
                     <p className="text-muted-foreground mb-8">{errorMessage}</p>
                 </div>
@@ -42,7 +42,7 @@ export default function ErrorPage() {
                     >
                         <Link to="/">
                             <Home className="mr-2 h-4 w-4" />
-                            Back to Home
+                            হোমে ফিরে যান
                         </Link>
                     </Button>
                     <Button
@@ -52,10 +52,10 @@ export default function ErrorPage() {
                         onClick={() => window.location.reload()}
                     >
                         <RefreshCw className="mr-2 h-4 w-4" />
-                        Try Again
+                        আবার চেষ্টা করুন
                     </Button>
                 </div>
             </motion.div>
         </div>
     );
-} 
+}

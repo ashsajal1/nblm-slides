@@ -34,11 +34,11 @@ export default function Navbar() {
   }
 
   const navLinks = [
-    { to: "/features", label: "Features" },
-    { to: "/pricing", label: "Pricing" },
-    { to: "/docs", label: "Docs" },
-    { to: "/blog", label: "Blog" },
-    { to: "/slides", label: "Slides" },
+    { to: "/features", label: "ফিচার" },
+    { to: "/pricing", label: "মূল্য" },
+    { to: "/docs", label: "ডক্স" },
+    { to: "/blog", label: "ব্লগ" },
+    { to: "/slides", label: "স্লাইড" },
   ];
 
   return (
@@ -57,7 +57,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Text label="SaaSify" className="text-xl font-bold text-primary" />
+              <Text label="ফ্ল্যাশকার্ড" className="text-xl font-bold text-primary" />
             </motion.div>
           </Link>
           
@@ -88,13 +88,13 @@ export default function Navbar() {
                 to='/login' 
                 className="text-sm font-medium text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
               >
-                Sign in
+                লগইন
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link to='/signup'>
                 <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  Get Started
+                  শুরু করুন
                 </Button>
               </Link>
             </motion.div>

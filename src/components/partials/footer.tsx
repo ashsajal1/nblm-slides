@@ -8,9 +8,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">SaaSify</h3>
+            <h3 className="text-lg font-semibold text-foreground">ফ্ল্যাশকার্ড</h3>
             <p className="text-muted-foreground text-sm">
-              Building the future of digital solutions with modern SaaS technology
+              আপনার পছন্দের বিষয়ে ফ্ল্যাশকার্ড তৈরি করুন এবং সহজে অধ্যয়ন করুন
             </p>
             <div className="flex space-x-4">
               <a 
@@ -42,26 +42,26 @@ export default function Footer() {
 
           {/* Product Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-foreground">Product</h3>
+            <h3 className="text-lg font-semibold mb-4 text-foreground">পণ্য</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/features" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Features
+                  ফিচার
                 </Link>
               </li>
               <li>
                 <Link to="/pricing" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Pricing
+                  মূল্য
                 </Link>
               </li>
               <li>
                 <Link to="/docs" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Documentation
+                  ডকুমেন্টেশন
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Updates
+                  আপডেট
                 </Link>
               </li>
             </ul>
@@ -69,21 +69,21 @@ export default function Footer() {
 
           {/* Company Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-foreground">Company</h3>
+            <h3 className="text-lg font-semibold mb-4 text-foreground">কোম্পানি</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  About
+                  আমাদের সম্পর্কে
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Blog
+                  ব্লগ
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Contact
+                  যোগাযোগ
                 </Link>
               </li>
               <li>
@@ -93,7 +93,7 @@ export default function Footer() {
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-primary transition-colors text-sm"
                 >
-                  Careers
+                  ক্যারিয়ার
                 </a>
               </li>
             </ul>
@@ -101,21 +101,21 @@ export default function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-foreground">Legal</h3>
+            <h3 className="text-lg font-semibold mb-4 text-foreground">আইনি</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Privacy Policy
+                  গোপনীয়তা নীতি
                 </Link>
               </li>
               <li>
                 <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Terms of Service
+                  সেবার শর্তাবলী
                 </Link>
               </li>
               <li>
                 <Link to="/security" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Security
+                  নিরাপত্তা
                 </Link>
               </li>
             </ul>
@@ -125,7 +125,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t">
           <p className="text-center text-muted-foreground text-sm">
-            &copy; {new Date().getFullYear()} SaaSify. All rights reserved.
+            &copy; {new Date().getFullYear()} ফ্ল্যাশকার্ড। সর্বস্বত্ব সংরক্ষিত।
           </p>
         </div>
       </div>
