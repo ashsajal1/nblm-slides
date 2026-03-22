@@ -1,6 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import {
@@ -9,7 +18,9 @@ import {
     deleteDeck as dbDeleteDeck,
     getActiveDeckId,
     setActiveDeckId,
+    DEFAULT_TOPICS,
     type FlashcardDeck,
+    type DeckTopic,
 } from "@/lib/db/indexedDB";
 import {
     ChevronLeft,
@@ -20,6 +31,7 @@ import {
     Trash2,
     X,
     AlertCircle,
+    FolderOpen,
 } from "lucide-react";
 
 const slideVariants = {
@@ -86,6 +98,14 @@ export default function Home() {
     const [uploadError, setUploadError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const [showSetupDialog, setShowSetupDialog] = useState(false);
+    const [pendingDeck, setPendingDeck] = useState<{
+        name: string;
+        slides: { question: string; answer: string }[];
+    } | null>(null);
+    const [setupTitle, setSetupTitle] = useState("");
+    const [setupTopic, setSetupTopic] = useState<DeckTopic>("study");
+
     useEffect(() => {
         async function load() {
             try {
@@ -110,7 +130,7 @@ export default function Home() {
             setUploadError(null);
 
             const reader = new FileReader();
-            reader.onload = async (e) => {
+            reader.onload = (e) => {
                 const text = e.target?.result as string;
                 const result = parseCSV(text, file.name);
 
@@ -121,30 +141,40 @@ export default function Home() {
                     return;
                 }
 
-                const id = `${Date.now()}-${Math.random()
-                    .toString(36)
-                    .slice(2, 8)}`;
-                const deck: FlashcardDeck = {
-                    id,
-                    name: result.name,
-                    slides: result.slides,
-                    createdAt: Date.now(),
-                };
-
-                await saveDeck(deck);
-                await setActiveDeckId(id);
-
-                const allDecks = await getAllDecks();
-                setDecks(allDecks);
-                setActiveId(id);
-                setCurrent(0);
-                setShowAnswer(false);
+                setSetupTitle(result.name);
+                setSetupTopic("study");
+                setPendingDeck(result);
+                setShowSetupDialog(true);
             };
             reader.readAsText(file);
         },
         []
     );
 
+    const confirmDeck = useCallback(async () => {
+        if (!pendingDeck || !setupTitle.trim()) return;
+
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        const deck: FlashcardDeck = {
+            id,
+            name: pendingDeck.name,
+            title: setupTitle.trim(),
+            topic: setupTopic,
+            slides: pendingDeck.slides,
+            createdAt: Date.now(),
+        };
+
+        await saveDeck(deck);
+        await setActiveDeckId(id);
+
+        const allDecks = await getAllDecks();
+        setDecks(allDecks);
+        setActiveId(id);
+        setCurrent(0);
+        setShowAnswer(false);
+        setShowSetupDialog(false);
+        setPendingDeck(null);
+    }, [pendingDeck, setupTitle, setupTopic]);
     const handleDrop = useCallback(
         (e: React.DragEvent) => {
             e.preventDefault();
@@ -253,7 +283,7 @@ export default function Home() {
                         </h1>
                         <p className="text-muted-foreground mt-2">
                             {activeDeck
-                                ? `${activeDeck.name} — স্লাইড ${current + 1} / ${slides.length}`
+                                ? `${activeDeck.title} — স্লাইড ${current + 1} / ${slides.length}`
                                 : "CSV ফাইল আপলোড করুন"}
                         </p>
                     </motion.div>
@@ -275,7 +305,8 @@ export default function Home() {
                                             : "bg-card text-muted-foreground border-border hover:border-primary/50"
                                     }`}
                                 >
-                                    <span>{d.name}</span>
+                                    <FolderOpen className="h-3.5 w-3.5 shrink-0" />
+                                    <span className="font-semibold">{d.title}</span>
                                     <span className="text-xs opacity-60">
                                         ({Array.isArray(d.slides) ? d.slides.length : 0})
                                     </span>
@@ -495,6 +526,61 @@ export default function Home() {
                     )}
                 </div>
             </section>
+
+            {/* Setup Dialog */}
+            <Dialog open={showSetupDialog} onOpenChange={setShowSetupDialog}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>ডেক সেটআপ করুন</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-2">
+                        <div className="space-y-2">
+                            <Label htmlFor="deck-title">টাইটেল</Label>
+                            <Input
+                                id="deck-title"
+                                placeholder="ডেকের নাম দিন"
+                                value={setupTitle}
+                                onChange={(e) => setSetupTitle(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>টপিক বাছাই করুন</Label>
+                            <div className="flex flex-wrap gap-2">
+                                {DEFAULT_TOPICS.map((t) => (
+                                    <button
+                                        key={t.value}
+                                        onClick={() => setSetupTopic(t.value)}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
+                                            setupTopic === t.value
+                                                ? "bg-primary text-primary-foreground border-primary"
+                                                : "bg-card text-muted-foreground border-border hover:border-primary/50"
+                                        }`}
+                                    >
+                                        {t.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setShowSetupDialog(false);
+                                setPendingDeck(null);
+                            }}
+                        >
+                            বাতিল
+                        </Button>
+                        <Button
+                            onClick={confirmDeck}
+                            disabled={!setupTitle.trim()}
+                        >
+                            সেভ করুন
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </>
     );
 }

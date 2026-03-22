@@ -1,7 +1,7 @@
 import { openDB, type IDBPDatabase } from "idb";
 
 const DB_NAME = "flashcards-db";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = "decks";
 
 export interface Flashcard {
@@ -9,9 +9,19 @@ export interface Flashcard {
     answer: string;
 }
 
+export type DeckTopic = "study" | "personal" | "trading";
+
+export const DEFAULT_TOPICS: { value: DeckTopic; label: string }[] = [
+    { value: "study", label: "Study" },
+    { value: "personal", label: "Personal" },
+    { value: "trading", label: "Trading" },
+];
+
 export interface FlashcardDeck {
     id: string;
     name: string;
+    title: string;
+    topic: DeckTopic;
     slides: Flashcard[];
     createdAt: number;
 }
@@ -21,8 +31,8 @@ let dbPromise: Promise<IDBPDatabase> | null = null;
 function getDB() {
     if (!dbPromise) {
         dbPromise = openDB(DB_NAME, DB_VERSION, {
-            upgrade(db) {
-                if (!db.objectStoreNames.contains(STORE_NAME)) {
+            upgrade(db, oldVersion) {
+                if (oldVersion < 1) {
                     db.createObjectStore(STORE_NAME, { keyPath: "id" });
                 }
             },
