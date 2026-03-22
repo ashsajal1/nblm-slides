@@ -10,6 +10,16 @@ import {
     DialogTitle,
     DialogFooter,
 } from "@/components/ui/dialog";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import {
@@ -108,6 +118,7 @@ export default function Home() {
     const [setupTitle, setSetupTitle] = useState("");
     const [setupTopic, setSetupTopic] = useState<DeckTopic>("study");
     const [topics, setTopics] = useState<Topic[]>(DEFAULT_TOPICS);
+    const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         async function load() {
@@ -319,7 +330,7 @@ export default function Home() {
                                         className="h-3.5 w-3.5 shrink-0 hover:text-destructive"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleDeleteDeck(d.id);
+                                            setDeckToDelete(d.id);
                                         }}
                                     />
                                 </button>
@@ -586,6 +597,31 @@ export default function Home() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={deckToDelete !== null} onOpenChange={(o) => !o && setDeckToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>ডেক মুছে ফেলুন</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            এই ডেকটি স্থায়ীভাবে মুছে ফেলা হবে। এটি পুনরুদ্ধার করা যাবে না।
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                if (deckToDelete) {
+                                    handleDeleteDeck(deckToDelete);
+                                    setDeckToDelete(null);
+                                }
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            মুছে ফেলুন
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }

@@ -11,6 +11,16 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
     getAllDecks,
     getAllTopics,
     saveDeck,
@@ -56,6 +66,8 @@ export default function SlidesPage() {
     const [editSlideIndex, setEditSlideIndex] = useState<number | null>(null);
     const [editQuestion, setEditQuestion] = useState("");
     const [editAnswer, setEditAnswer] = useState("");
+    const [slideToDelete, setSlideToDelete] = useState<number | null>(null);
+    const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
 
     const [showTopicDialog, setShowTopicDialog] = useState(false);
     const [newTopicLabel, setNewTopicLabel] = useState("");
@@ -362,7 +374,7 @@ export default function SlidesPage() {
                                                 <Settings2 className="h-4 w-4 text-muted-foreground" />
                                             </button>
                                             <button
-                                                onClick={() => handleDeleteDeck(deck.id)}
+                                                onClick={() => setDeckToDelete(deck.id)}
                                                 className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors"
                                                 title="Delete"
                                             >
@@ -438,7 +450,7 @@ export default function SlidesPage() {
                                                                 <Pencil className="h-3.5 w-3.5 text-muted-foreground" />
                                                             </button>
                                                             <button
-                                                                onClick={() => handleDeleteSlide(i)}
+                                                                onClick={() => setSlideToDelete(i)}
                                                                 className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors"
                                                             >
                                                                 <Trash2 className="h-3.5 w-3.5 text-muted-foreground hover:text-destructive" />
@@ -678,6 +690,56 @@ export default function SlidesPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+
+            <AlertDialog open={slideToDelete !== null} onOpenChange={(o) => !o && setSlideToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>স্লাইড মুছে ফেলুন</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            এই স্লাইডটি স্থায়ীভাবে মুছে ফেলা হবে। এটি পুনরুদ্ধার করা যাবে না।
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                if (slideToDelete !== null) {
+                                    handleDeleteSlide(slideToDelete);
+                                    setSlideToDelete(null);
+                                }
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            মুছে ফেলুন
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog open={deckToDelete !== null} onOpenChange={(o) => !o && setDeckToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>ডেক মুছে ফেলুন</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            এই ডেকটি স্থায়ীভাবে মুছে ফেলা হবে। এটি পুনরুদ্ধার করা যাবে না।
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => {
+                                if (deckToDelete) {
+                                    handleDeleteDeck(deckToDelete);
+                                    setDeckToDelete(null);
+                                }
+                            }}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            মুছে ফেলুন
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }
