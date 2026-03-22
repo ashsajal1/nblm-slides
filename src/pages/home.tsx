@@ -167,6 +167,21 @@ export default function Home() {
         [t]
     );
 
+    const handleMultipleFileUpload = useCallback(
+        (files: FileList | null) => {
+            if (!files || files.length === 0) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.name.endsWith(".csv")) {
+                    handleFileUpload(file);
+                    break;
+                }
+            }
+        },
+        [handleFileUpload]
+    );
+
     const confirmDeck = useCallback(async () => {
         if (!pendingDeck || !setupTitle.trim()) return;
 
@@ -195,9 +210,14 @@ export default function Home() {
     const handleDrop = useCallback(
         (e: React.DragEvent) => {
             e.preventDefault();
-            const file = e.dataTransfer.files[0];
-            if (file && file.name.endsWith(".csv")) {
-                handleFileUpload(file);
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                    if (files[i].name.endsWith(".csv")) {
+                        handleFileUpload(files[i]);
+                        break;
+                    }
+                }
             } else {
                 setUploadError(t("home.invalidFile"));
             }
@@ -254,9 +274,26 @@ export default function Home() {
                 setShowAnswer((s) => !s);
             }
         };
+        const handlePaste = (e: ClipboardEvent) => {
+            const items = e.clipboardData?.items;
+            if (!items) return;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === "file" && items[i].type === "text/csv") {
+                    const file = items[i].getAsFile();
+                    if (file) {
+                        handleFileUpload(file);
+                        break;
+                    }
+                }
+            }
+        };
         window.addEventListener("keydown", handleKey);
-        return () => window.removeEventListener("keydown", handleKey);
-    }, [paginate]);
+        window.addEventListener("paste", handlePaste);
+        return () => {
+            window.removeEventListener("keydown", handleKey);
+            window.removeEventListener("paste", handlePaste);
+        };
+    }, [paginate, handleFileUpload]);
 
     useEffect(() => {
         setShowAnswer(false);
@@ -358,10 +395,10 @@ export default function Home() {
                             ref={fileInputRef}
                             type="file"
                             accept=".csv"
+                            multiple
                             className="hidden"
                             onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleFileUpload(file);
+                                handleMultipleFileUpload(e.target.files);
                                 e.target.value = "";
                             }}
                         />
