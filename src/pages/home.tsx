@@ -14,6 +14,7 @@ import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import {
     getAllDecks,
+    getAllTopics,
     saveDeck,
     deleteDeck as dbDeleteDeck,
     getActiveDeckId,
@@ -21,6 +22,7 @@ import {
     DEFAULT_TOPICS,
     type FlashcardDeck,
     type DeckTopic,
+    type Topic,
 } from "@/lib/db/indexedDB";
 import {
     ChevronLeft,
@@ -105,16 +107,19 @@ export default function Home() {
     } | null>(null);
     const [setupTitle, setSetupTitle] = useState("");
     const [setupTopic, setSetupTopic] = useState<DeckTopic>("study");
+    const [topics, setTopics] = useState<Topic[]>(DEFAULT_TOPICS);
 
     useEffect(() => {
         async function load() {
             try {
-                const [allDecks, activeId] = await Promise.all([
+                const [allDecks, activeId, allTopics] = await Promise.all([
                     getAllDecks(),
                     getActiveDeckId(),
+                    getAllTopics(),
                 ]);
                 setDecks(allDecks);
                 setActiveId(activeId);
+                setTopics(allTopics);
             } finally {
                 setLoading(false);
             }
@@ -546,12 +551,12 @@ export default function Home() {
                         <div className="space-y-2">
                             <Label>টপিক বাছাই করুন</Label>
                             <div className="flex flex-wrap gap-2">
-                                {DEFAULT_TOPICS.map((t) => (
+                                {topics.map((t) => (
                                     <button
-                                        key={t.value}
-                                        onClick={() => setSetupTopic(t.value)}
+                                        key={t.id}
+                                        onClick={() => setSetupTopic(t.id)}
                                         className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-                                            setupTopic === t.value
+                                            setupTopic === t.id
                                                 ? "bg-primary text-primary-foreground border-primary"
                                                 : "bg-card text-muted-foreground border-border hover:border-primary/50"
                                         }`}

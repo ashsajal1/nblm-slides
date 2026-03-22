@@ -38,6 +38,7 @@ export default function Navbar() {
     { to: "/pricing", label: "Pricing" },
     { to: "/docs", label: "Docs" },
     { to: "/blog", label: "Blog" },
+    { to: "/slides", label: "Slides" },
   ];
 
   return (
