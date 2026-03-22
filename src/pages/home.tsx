@@ -168,18 +168,60 @@ export default function Home() {
     );
 
     const handleMultipleFileUpload = useCallback(
-        (files: FileList | null) => {
+        async (files: FileList | null) => {
             if (!files || files.length === 0) return;
             
+            const csvFiles: File[] = [];
             for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.name.endsWith(".csv")) {
-                    handleFileUpload(file);
-                    break;
+                if (files[i].name.endsWith(".csv")) {
+                    csvFiles.push(files[i]);
                 }
             }
+            
+            if (csvFiles.length === 0) {
+                setUploadError(t("home.invalidFile"));
+                return;
+            }
+            
+            if (csvFiles.length === 1) {
+                handleFileUpload(csvFiles[0]);
+                return;
+            }
+            
+            const newDecks: FlashcardDeck[] = [];
+            
+            for (const file of csvFiles) {
+                const text = await file.text();
+                const result = parseCSV(text, file.name);
+                if (result && result.slides.length > 0) {
+                    const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+                    const deck: FlashcardDeck = {
+                        id,
+                        name: result.name,
+                        title: result.name,
+                        topic: "study" as DeckTopic,
+                        slides: result.slides,
+                        createdAt: Date.now(),
+                    };
+                    newDecks.push(deck);
+                }
+            }
+            
+            if (newDecks.length > 0) {
+                for (const deck of newDecks) {
+                    await saveDeck(deck);
+                }
+                const allDecks = await getAllDecks();
+                setDecks(allDecks);
+                if (newDecks.length > 0) {
+                    await setActiveDeckId(newDecks[0].id);
+                    setActiveId(newDecks[0].id);
+                }
+                setCurrent(0);
+                setShowAnswer(false);
+            }
         },
-        [handleFileUpload]
+        [handleFileUpload, t]
     );
 
     const confirmDeck = useCallback(async () => {
