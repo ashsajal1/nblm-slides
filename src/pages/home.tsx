@@ -106,7 +106,7 @@ export default function Home() {
     const slides = activeDeck?.slides ?? [];
 
     const handleFileUpload = useCallback(
-        async (file: File) => {
+        (file: File) => {
             setUploadError(null);
 
             const reader = new FileReader();
@@ -134,10 +134,7 @@ export default function Home() {
                 await saveDeck(deck);
                 await setActiveDeckId(id);
 
-                const [allDecks] = await Promise.all([
-                    getAllDecks(),
-                    setActiveDeckId(id),
-                ]);
+                const allDecks = await getAllDecks();
                 setDecks(allDecks);
                 setActiveId(id);
                 setCurrent(0);
