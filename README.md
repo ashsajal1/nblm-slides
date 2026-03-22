@@ -1,161 +1,228 @@
-# SaaSify - Modern SaaS Application Template
+# ফ্ল্যাশকার্ড — Flashcard Study App
 
-Welcome to **SaaSify**, a modern, production-ready SaaS application template built with React, TypeScript, and Tailwind CSS. This template provides everything you need to build a professional SaaS product with best practices, modern features, and a beautiful UI.
+A Bengali/English flashcard study application with multi-language UI support. Upload CSV files (including exports from Google NotebookLM) and study flashcards with an interactive slideshow.
 
-## ✨ Features
+Supports **8 languages**: Bengali, English, Japanese, Chinese, French, Spanish, Hindi, German.
 
-### 🎨 Modern UI/UX
-- **Beautiful Design System**: Built with Tailwind CSS and shadcn/ui
-- **Dark Mode**: Seamless dark/light theme support
-- **Responsive Design**: Mobile-first approach with responsive components
-- **Animations**: Smooth transitions and micro-interactions using Framer Motion
-- **Gradient Effects**: Modern gradient designs for visual appeal
+## Features
 
-### 🛠️ Technical Features
-- **TypeScript**: Type-safe code with modern TypeScript features
-- **React 18**: Latest React features and concurrent rendering
-- **Tailwind CSS**: Utility-first CSS framework for rapid development
-- **Vite**: Lightning-fast build tool and development server
-- **PWA Support**: Progressive Web App capabilities
-- **SEO Optimized**: Built-in SEO components and meta tags
+- **Multi-language UI** — Switch between 8 languages instantly
+- **CSV Upload** — Drag & drop or click to upload flashcard decks
+- **Google NotebookLM Compatible** — Import quiz CSVs directly from NotebookLM
+- **Interactive Slideshow** — Navigate flashcards with keyboard or click
+- **Topic Organization** — Filter decks by topic (study, science, history, etc.)
+- **CRUD Management** — Create, edit, delete decks and individual cards
+- **IndexedDB Persistence** — Decks saved locally in your browser
+- **Dark/Light Mode** — Toggle between themes
+- **PWA Support** — Install as a desktop or mobile app
+- **Responsive Design** — Works on desktop and mobile
 
-### 🔒 Authentication & Security
-- **Authentication**: Ready-to-use auth system
-- **Protected Routes**: Secure route handling
-- **API Security**: Built-in security best practices
-- **Environment Variables**: Secure configuration management
+## Quick Start
 
-### 📦 State Management & Data
-- **State Management**: Efficient state handling
-- **API Integration**: Ready for backend integration
-- **Data Fetching**: Modern data fetching patterns
-- **Form Handling**: Advanced form validation and handling
+```sh
+# Install dependencies
+pnpm install
 
-## 🚀 Getting Started
+# Start development server
+pnpm dev
 
-### Prerequisites
-
-- **Node.js** (v18 or higher)
-- **Pnpm** (v8 or higher)
-
-### Installation
-
-1. **Clone the repository**:
-   ```sh
-   git clone https://github.com/yourusername/saasify.git
-   ```
-
-2. **Navigate to project directory**:
-   ```sh
-   cd saasify
-   ```
-
-3. **Install dependencies**:
-   ```sh
-   pnpm install
-   ```
-
-4. **Set up environment variables**:
-   ```sh
-   cp .env.example .env.local
-   ```
-
-5. **Start development server**:
-   ```sh
-   pnpm dev
-   ```
-
-## 🏗️ Project Structure
-
-```
-saasify/
-├── public/                 # Static assets
-├── src/
-│   ├── components/        # Reusable components
-│   │   ├── ui/           # UI components
-│   │   ├── custom-ui/    # Custom UI components
-│   │   └── partials/     # Layout components
-│   ├── features/         # Feature-based modules
-│   ├── hooks/            # Custom React hooks
-│   ├── lib/              # Utility functions
-│   ├── pages/            # Page components
-│   ├── styles/           # Global styles
-│   ├── types/            # TypeScript types
-│   ├── App.tsx           # Root component
-│   └── main.tsx          # Entry point
-├── .env.example          # Environment variables example
-├── .eslintrc.js         # ESLint configuration
-├── .prettierrc          # Prettier configuration
-├── tailwind.config.js   # Tailwind configuration
-├── tsconfig.json        # TypeScript configuration
-└── vite.config.ts       # Vite configuration
+# Build for production
+pnpm build
 ```
 
-## 🎯 Key Features in Detail
+## How to Use
 
-### Authentication System
-- Email/Password authentication
-- Social login integration
-- Protected routes
-- Session management
+### 1. Upload Flashcard CSV
 
-### UI Components
-- Modern button styles
-- Form components
-- Modal dialogs
-- Toast notifications
-- Loading states
-- Error boundaries
+On the home page, drag and drop a `.csv` file or click the **Upload CSV** button.
 
-### Performance
-- Code splitting
-- Lazy loading
-- Image optimization
-- Caching strategies
-- Performance monitoring
+After uploading:
+1. Enter a **title** for your deck
+2. Select a **topic** (study, science, history, language, custom)
+3. Click **Save**
 
-### Development
-- Hot module replacement
-- Type checking
-- Linting and formatting
-- Git hooks
-- CI/CD ready
+Your deck will appear as a tab. Click it to start studying.
 
-## 📚 Documentation
+### 2. Study with Slideshow
 
-### Component Documentation
-Each component is documented with:
-- Props interface
-- Usage examples
-- Best practices
-- Accessibility guidelines
+- Click **Show Answer** or press **Space / Enter** to reveal the answer
+- Use **← →** arrow keys or click the arrows to navigate
+- Progress bar shows your position in the deck
 
-### Style Guide
-- Color system
-- Typography
-- Spacing
-- Component patterns
-- Animation guidelines
+### 3. Manage Decks & Cards
 
-## 🤝 Contributing
+Go to the **Slides** page (`/slides`) to:
+- View all decks in a grid
+- Filter by topic
+- Edit deck title and topic
+- Add, edit, or delete individual cards
+- Create custom topics
+- Delete entire decks
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+### 4. Change Language
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [shadcn/ui](https://ui.shadcn.com/) for the beautiful components
-- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS
-- [Framer Motion](https://www.framer.com/motion/) for animations
-- [Vite](https://vitejs.dev/) for the build tool
-
-## 📞 Support
-
-For support, email ashsajal@yahoo.com or join our [Discord community](#).
+Click the **Globe** icon in the top navigation bar and select your language.
 
 ---
 
-Built with ❤️ by Sajal.
+## Importing from Google NotebookLM
+
+Google NotebookLM can export flashcards as a CSV file. Follow these steps to import them:
+
+### Step 1: Create or Open a Notebook in NotebookLM
+
+1. Go to [NotebookLM](https://notebooklm.google.com/) (you need a Google account)
+2. Create a new Notebook or open an existing one
+3. Add sources (PDFs, websites, YouTube videos, Google Docs) for NotebookLM to analyze
+
+### Step 2: Generate Quiz (Flashcards)
+
+1. In your Notebook, find the **Quiz** button or type a prompt like:
+   ```
+   Generate a quiz with 10 multiple choice questions about [topic]
+   ```
+2. NotebookLM will create a quiz with questions and answers
+3. Click the **Download** button on the quiz card
+4. Select **CSV** format to download
+
+> **Note:** If NotebookLM doesn't offer CSV export directly, you may need to use the Audio Overview feature or copy-paste content. Some NotebookLM users export to Google Docs first, then format as CSV manually.
+
+### Step 3: Convert to App Format (if needed)
+
+The exported CSV format may vary. If the app shows an "Invalid CSV format" error, ensure your CSV has this structure:
+
+```csv
+"Question","Answer"
+"What is photosynthesis?","The process by which plants convert sunlight into energy"
+"What is the capital of France?","Paris"
+```
+
+**Required format:**
+- Column 1: Question (header must contain `Question` or `প্রশ্ন` or `问题`)
+- Column 2: Answer (header must contain `Answer` or `উত্তর` or `答案`)
+- Fields enclosed in double quotes
+- Comma-separated
+
+### Step 4: Upload to the App
+
+1. Go to the app home page
+2. Drag and drop the CSV file
+3. Assign a title and topic
+4. Click Save and start studying!
+
+### Sample CSV
+
+```csv
+"প্রশ্ন (Question)","উত্তর (Answer)"
+"বাংলাদেশের রাজধানী কী?","ঢাকা"
+"সূর্য কি?","নক্ষত্র"
+"পানির রাসায়নিক সংকেত কী?","H2O"
+```
+
+---
+
+## Project Structure
+
+```
+nblm-slides/
+├── public/                  # Static assets (favicon, PWA icons)
+├── src/
+│   ├── components/
+│   │   ├── ui/             # shadcn/ui components
+│   │   ├── custom-ui/      # Custom components (Text, Particles, Search)
+│   │   ├── partials/       # Layout (Navbar, Footer, SideNav)
+│   │   ├── language-switcher.tsx   # Language dropdown
+│   │   └── mode-toggle.tsx        # Theme toggle
+│   ├── hooks/
+│   ├── i18n/
+│   │   ├── index.ts        # i18next configuration
+│   │   └── locales/        # Translation JSON files (bn, en, ja, zh, fr, es, hi, de)
+│   ├── lib/
+│   │   ├── db/
+│   │   │   └── indexedDB.ts # IndexedDB for flashcard storage
+│   │   └── store/           # Redux store
+│   ├── pages/
+│   │   ├── home.tsx        # Main flashcard slideshow
+│   │   ├── slides.tsx      # Deck management
+│   │   ├── features.tsx
+│   │   ├── pricing.tsx
+│   │   ├── about.tsx
+│   │   ├── contact.tsx
+│   │   ├── blog.tsx
+│   │   ├── docs.tsx
+│   │   ├── login.tsx
+│   │   ├── signup.tsx
+│   │   └── not-found.tsx
+│   ├── App.tsx
+│   └── main.tsx
+├── vite.config.ts           # Vite + PWA configuration
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
+```
+
+## Adding New Languages
+
+To add a new language:
+
+1. Create a new JSON file in `src/i18n/locales/` (e.g., `pt.json`)
+2. Copy the structure from `en.json` and translate all values
+3. Register the language in `src/i18n/index.ts`:
+
+```ts
+import pt from './locales/pt.json';
+
+export const languages = [
+  // ... existing languages ...
+  { code: 'pt', name: 'Portuguese', nativeName: 'Português' },
+];
+```
+
+4. Add to resources:
+```ts
+resources: {
+  // ... existing ...
+  pt: { translation: pt },
+}
+```
+
+## CSV Format Reference
+
+| Column Header (any of) | Description |
+|------------------------|-------------|
+| `Question`, `প্রশ্ন`, `问题` | The question/front of card |
+| `Answer`, `উত্তর`, `答案` | The answer/back of card |
+
+**Example:**
+```csv
+"Question","Answer"
+"What is the largest planet?","Jupiter"
+"Who wrote Hamlet?","William Shakespeare"
+```
+
+**Bengali example:**
+```csv
+"প্রশ্ন","উত্তর"
+"ভারতের রাজধানী কী?","নতুন দিল্লি"
+"সর্বোচ্চ পর্বত কোনটি?","মাউন্ট এভারেস্ট"
+```
+
+## Tech Stack
+
+- **React 18** + **TypeScript**
+- **Vite** (build tool)
+- **Tailwind CSS** + **shadcn/ui**
+- **Framer Motion** (animations)
+- **react-i18next** (internationalization)
+- **IndexedDB** via **idb** (local storage)
+- **PWA** (vite-plugin-pwa)
+- **React Router DOM** (routing)
+
+## Prerequisites
+
+- **Node.js** v18+
+- **Pnpm** v8+ (recommended) or npm
+
+## License
+
+MIT — Built with ❤️ by Sajal.
