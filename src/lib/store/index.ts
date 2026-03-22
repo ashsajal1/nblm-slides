@@ -5,20 +5,20 @@ import storage from 'redux-persist/lib/storage';
 import userPreferencesReducer from './slices/userPreferencesSlice';
 import authReducer from './slices/authSlice';
 import uiReducer from './slices/uiSlice';
+import flashcardsReducer from './slices/flashcardsSlice';
 
 const rootReducer = combineReducers({
   userPreferences: userPreferencesReducer,
   auth: authReducer,
   ui: uiReducer,
+  flashcards: flashcardsReducer,
 });
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  // Only persist these reducers
-  whitelist: ['userPreferences', 'auth'],
-  // Don't persist these reducers
+  whitelist: ['userPreferences', 'auth', 'flashcards'],
   blacklist: ['ui'],
 };
 
@@ -39,6 +39,5 @@ export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
 export const useAppDispatch: () => AppDispatch = useDispatch;
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector; 
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
