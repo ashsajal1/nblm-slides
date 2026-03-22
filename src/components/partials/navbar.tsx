@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { CiMenuFries } from "react-icons/ci";
 import { Button } from "../ui/button";
 import Text from "../custom-ui/text";
 import SideNav from "./side-nav";
 import { ModeToggle } from "../mode-toggle";
+import { LanguageSwitcher } from "../language-switcher";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const [scrollY, setScrollY] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,11 +37,11 @@ export default function Navbar() {
   }
 
   const navLinks = [
-    { to: "/features", label: "ফিচার" },
-    { to: "/pricing", label: "মূল্য" },
-    { to: "/docs", label: "ডক্স" },
-    { to: "/blog", label: "ব্লগ" },
-    { to: "/slides", label: "স্লাইড" },
+    { to: "/features", label: t("nav.features") },
+    { to: "/pricing", label: t("nav.pricing") },
+    { to: "/docs", label: t("nav.docs") },
+    { to: "/blog", label: t("nav.blog") },
+    { to: "/slides", label: t("nav.slides") },
   ];
 
   return (
@@ -57,7 +60,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Text label="ফ্ল্যাশকার্ড" className="text-xl font-bold text-primary" />
+              <Text label={t("nav.brand")} className="text-xl font-bold text-primary" />
             </motion.div>
           </Link>
           
@@ -81,25 +84,26 @@ export default function Navbar() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-2">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link 
                 to='/login' 
-                className="text-sm font-medium text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors"
+                className="text-sm font-medium text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors px-3 py-2"
               >
-                লগইন
+                {t("nav.login")}
               </Link>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link to='/signup'>
                 <Button className="bg-primary hover:bg-primary/90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  শুরু করুন
+                  {t("nav.signup")}
                 </Button>
               </Link>
             </motion.div>
           </div>
           
+          <LanguageSwitcher />
           <ModeToggle />
           <motion.div
             whileHover={{ scale: 1.1 }}

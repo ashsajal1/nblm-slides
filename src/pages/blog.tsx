@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
+import { useTranslation } from "react-i18next";
 import { 
     Calendar, 
     User, 
@@ -12,12 +13,12 @@ import {
 import { Input } from "@/components/ui/input";
 
 const categories = [
-    "All",
-    "Product Updates",
-    "Tutorials",
-    "Case Studies",
-    "Industry News",
-    "Best Practices"
+    { key: "blog.all", variant: "default" as const },
+    { key: "blog.productUpdates", variant: "outline" as const },
+    { key: "blog.tutorials", variant: "outline" as const },
+    { key: "blog.caseStudies", variant: "outline" as const },
+    { key: "blog.industryNews", variant: "outline" as const },
+    { key: "blog.bestPractices", variant: "outline" as const }
 ];
 
 const articles = [
@@ -26,7 +27,7 @@ const articles = [
         excerpt: "Learn the best practices for growing and optimizing your SaaS business in today's competitive market.",
         author: "Sarah Johnson",
         date: "Mar 15, 2024",
-        category: "Best Practices",
+        categoryKey: "blog.article1Category",
         readTime: "5 min read",
         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
     },
@@ -35,7 +36,7 @@ const articles = [
         excerpt: "Explore the latest trends and innovations shaping the future of cloud computing and SaaS solutions.",
         author: "Michael Chen",
         date: "Mar 12, 2024",
-        category: "Industry News",
+        categoryKey: "blog.article2Category",
         readTime: "8 min read",
         image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
     },
@@ -44,7 +45,7 @@ const articles = [
         excerpt: "A comprehensive guide to help you get started with SaaSify and make the most of its features.",
         author: "Emily Rodriguez",
         date: "Mar 10, 2024",
-        category: "Tutorials",
+        categoryKey: "blog.article3Category",
         readTime: "6 min read",
         image: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
     },
@@ -53,18 +54,20 @@ const articles = [
         excerpt: "A detailed case study of how Company X leveraged SaaSify to achieve remarkable growth.",
         author: "David Wilson",
         date: "Mar 8, 2024",
-        category: "Case Studies",
+        categoryKey: "blog.article4Category",
         readTime: "7 min read",
         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
     }
 ];
 
 export default function Blog() {
+    const { t } = useTranslation();
+
     return (
         <>
             <Seo 
-                title="Blog | SaaSify" 
-                description="Latest insights, tutorials, and updates from the SaaSify team." 
+                title={t("blog.title")} 
+                description={t("blog.description")} 
             />
             
             <div className="min-h-screen bg-background">
@@ -78,14 +81,14 @@ export default function Blog() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <Text 
-                                    label="Blog" 
+                                    label={t("blog.headline")} 
                                     className="text-4xl md:text-5xl font-bold text-primary mb-6" 
                                 />
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                    Latest Insights & Updates
+                                    {t("blog.subheadline")}
                                 </h1>
                                 <p className="text-xl text-muted-foreground">
-                                    Stay up to date with the latest news, tutorials, and best practices in the SaaS industry.
+                                    {t("blog.description")}
                                 </p>
                             </motion.div>
                         </div>
@@ -101,17 +104,17 @@ export default function Blog() {
                                     {categories.map((category, index) => (
                                         <Button
                                             key={index}
-                                            variant={index === 0 ? "default" : "outline"}
+                                            variant={category.variant}
                                             className="rounded-full"
                                         >
-                                            {category}
+                                            {t(category.key)}
                                         </Button>
                                     ))}
                                 </div>
                                 <div className="relative w-full md:w-64">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
-                                        placeholder="Search articles..."
+                                        placeholder={t("blog.searchPlaceholder")}
                                         className="pl-10"
                                     />
                                 </div>
@@ -141,7 +144,7 @@ export default function Blog() {
                                             />
                                             <div className="absolute top-4 left-4">
                                                 <span className="bg-primary/90 text-primary-foreground px-3 py-1 rounded-full text-sm">
-                                                    {article.category}
+                                                    {t(article.categoryKey)}
                                                 </span>
                                             </div>
                                         </div>
@@ -157,7 +160,7 @@ export default function Blog() {
                                                 </div>
                                                 <div className="flex items-center gap-1">
                                                     <Tag className="h-4 w-4" />
-                                                    {article.readTime}
+                                                    {t("blog.minRead", { count: parseInt(article.readTime) })}
                                                 </div>
                                             </div>
                                             <h2 className="text-xl font-semibold text-foreground mb-2">
@@ -167,7 +170,7 @@ export default function Blog() {
                                                 {article.excerpt}
                                             </p>
                                             <Button variant="link" className="p-0 h-auto">
-                                                Read More
+                                                {t("blog.readMore")}
                                                 <ArrowRight className="ml-2 h-4 w-4" />
                                             </Button>
                                         </div>
@@ -183,19 +186,19 @@ export default function Blog() {
                     <div className="container mx-auto px-4">
                         <div className="max-w-3xl mx-auto text-center">
                             <h2 className="text-3xl font-bold text-foreground mb-4">
-                                Subscribe to Our Newsletter
+                                {t("blog.newsletterTitle")}
                             </h2>
                             <p className="text-xl text-muted-foreground mb-8">
-                                Get the latest articles and updates delivered straight to your inbox.
+                                {t("blog.newsletterDesc")}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Input
                                     type="email"
-                                    placeholder="Enter your email"
+                                    placeholder={t("blog.emailPlaceholder")}
                                     className="max-w-md"
                                 />
                                 <Button className="bg-primary hover:bg-primary/90">
-                                    Subscribe
+                                    {t("blog.subscribe")}
                                 </Button>
                             </div>
                         </div>
@@ -204,4 +207,4 @@ export default function Blog() {
             </div>
         </>
     );
-} 
+}

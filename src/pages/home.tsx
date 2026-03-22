@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -100,6 +101,7 @@ function parseCSV(
 }
 
 export default function Home() {
+    const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [decks, setDecks] = useState<FlashcardDeck[]>([]);
@@ -151,9 +153,7 @@ export default function Home() {
                 const result = parseCSV(text, file.name);
 
                 if (!result || result.slides.length === 0) {
-                    setUploadError(
-                        "Invalid CSV format. Expected columns: প্রশ্ন (question) and উত্তর (answer)."
-                    );
+                    setUploadError(t("home.invalidCsv"));
                     return;
                 }
 
@@ -164,7 +164,7 @@ export default function Home() {
             };
             reader.readAsText(file);
         },
-        []
+        [t]
     );
 
     const confirmDeck = useCallback(async () => {
@@ -191,6 +191,7 @@ export default function Home() {
         setShowSetupDialog(false);
         setPendingDeck(null);
     }, [pendingDeck, setupTitle, setupTopic]);
+
     const handleDrop = useCallback(
         (e: React.DragEvent) => {
             e.preventDefault();
@@ -198,10 +199,10 @@ export default function Home() {
             if (file && file.name.endsWith(".csv")) {
                 handleFileUpload(file);
             } else {
-                setUploadError("Please drop a valid .csv file.");
+                setUploadError(t("home.invalidFile"));
             }
         },
-        [handleFileUpload]
+        [handleFileUpload, t]
     );
 
     const handleDeleteDeck = useCallback(
@@ -273,8 +274,8 @@ export default function Home() {
     return (
         <>
             <Seo
-                title="ফ্ল্যাশকার্ড"
-                description="CSV ফাইল আপলোড করে কুইজ স্লাইড দেখুন"
+                title={t("home.title")}
+                description={t("home.subtitle")}
             />
 
             <section
@@ -295,12 +296,12 @@ export default function Home() {
                         className="text-center mb-6"
                     >
                         <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-                            ফ্ল্যাশকার্ড
+                            {t("home.title")}
                         </h1>
                         <p className="text-muted-foreground mt-2">
                             {activeDeck
-                                ? `${activeDeck.title} — স্লাইড ${current + 1} / ${slides.length}`
-                                : "CSV ফাইল আপলোড করুন"}
+                                ? `${activeDeck.title} — ${t("home.slideOf", { current: current + 1, total: slides.length })}`
+                                : t("home.uploadPrompt")}
                         </p>
                     </motion.div>
 
@@ -351,7 +352,7 @@ export default function Home() {
                             className="gap-2"
                         >
                             <Upload className="h-4 w-4" />
-                            CSV আপলোড করুন
+                            {t("home.uploadCsv")}
                         </Button>
                         <input
                             ref={fileInputRef}
@@ -424,7 +425,7 @@ export default function Home() {
                                             <div className="flex items-center gap-2 text-primary">
                                                 <HelpCircle className="h-6 w-6" />
                                                 <span className="text-sm font-semibold uppercase tracking-wider">
-                                                    প্রশ্ন
+                                                    {t("home.question")}
                                                 </span>
                                             </div>
                                             <h2 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
@@ -442,7 +443,7 @@ export default function Home() {
                                                 className="text-base"
                                             >
                                                 <Lightbulb className="mr-2 h-5 w-5" />
-                                                উত্তর দেখুন
+                                                {t("home.showAnswer")}
                                             </Button>
                                         ) : (
                                             <motion.div
@@ -454,7 +455,7 @@ export default function Home() {
                                                 <div className="flex items-center justify-center gap-2 text-primary mb-2">
                                                     <Lightbulb className="h-5 w-5" />
                                                     <span className="text-sm font-semibold uppercase tracking-wider">
-                                                        উত্তর
+                                                        {t("home.answer")}
                                                     </span>
                                                 </div>
                                                 <p className="text-lg md:text-xl font-semibold text-foreground">
@@ -516,7 +517,7 @@ export default function Home() {
                             </div>
 
                             <p className="text-center text-sm text-muted-foreground mt-4">
-                                ← → দিয়ে স্লাইড পরিবর্তন, Space দিয়ে উত্তর দেখুন
+                                {t("home.keyboardHint")}
                             </p>
                         </>
                     ) : (
@@ -531,13 +532,12 @@ export default function Home() {
                                 </div>
                             </div>
                             <h2 className="text-xl font-semibold text-foreground">
-                                CSV ফাইল আপলোড করুন
+                                {t("home.noDeck")}
                             </h2>
-                            <p className="text-muted-foreground max-w-md mx-auto">
-                                CSV ফাইলে <strong>প্রশ্ন</strong> ও{" "}
-                                <strong>উত্তর</strong> কলাম থাকতে হবে। ফাইলটি
-                                টেনে আনুন বা বাটনে ক্লিক করুন।
-                            </p>
+                            <p 
+                                className="text-muted-foreground max-w-md mx-auto"
+                                dangerouslySetInnerHTML={{ __html: t("home.noDeckDesc") }}
+                            />
                         </motion.div>
                     )}
                 </div>
@@ -547,32 +547,32 @@ export default function Home() {
             <Dialog open={showSetupDialog} onOpenChange={setShowSetupDialog}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>ডেক সেটআপ করুন</DialogTitle>
+                        <DialogTitle>{t("home.deckSetup")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-2">
                         <div className="space-y-2">
-                            <Label htmlFor="deck-title">টাইটেল</Label>
+                            <Label htmlFor="deck-title">{t("home.deckTitle")}</Label>
                             <Input
                                 id="deck-title"
-                                placeholder="ডেকের নাম দিন"
+                                placeholder={t("home.deckTitlePlaceholder")}
                                 value={setupTitle}
                                 onChange={(e) => setSetupTitle(e.target.value)}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>টপিক বাছাই করুন</Label>
+                            <Label>{t("home.selectTopic")}</Label>
                             <div className="flex flex-wrap gap-2">
-                                {topics.map((t) => (
+                                {topics.map((topic) => (
                                     <button
-                                        key={t.id}
-                                        onClick={() => setSetupTopic(t.id)}
+                                        key={topic.id}
+                                        onClick={() => setSetupTopic(topic.id as DeckTopic)}
                                         className={`px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-                                            setupTopic === t.id
+                                            setupTopic === topic.id
                                                 ? "bg-primary text-primary-foreground border-primary"
                                                 : "bg-card text-muted-foreground border-border hover:border-primary/50"
                                         }`}
                                     >
-                                        {t.label}
+                                        {topic.label}
                                     </button>
                                 ))}
                             </div>
@@ -586,13 +586,13 @@ export default function Home() {
                                 setPendingDeck(null);
                             }}
                         >
-                            বাতিল
+                            {t("home.cancel")}
                         </Button>
                         <Button
                             onClick={confirmDeck}
                             disabled={!setupTitle.trim()}
                         >
-                            সেভ করুন
+                            {t("home.save")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -601,13 +601,13 @@ export default function Home() {
             <AlertDialog open={deckToDelete !== null} onOpenChange={(o) => !o && setDeckToDelete(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>ডেক মুছে ফেলুন</AlertDialogTitle>
+                        <AlertDialogTitle>{t("home.deleteDeck")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            এই ডেকটি স্থায়ীভাবে মুছে ফেলা হবে। এটি পুনরুদ্ধার করা যাবে না।
+                            {t("home.deleteDeckConfirm")}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogCancel>{t("home.cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={() => {
                                 if (deckToDelete) {
@@ -617,7 +617,7 @@ export default function Home() {
                             }}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                            মুছে ফেলুন
+                            {t("home.delete")}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

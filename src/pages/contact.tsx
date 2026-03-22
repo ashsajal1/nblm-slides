@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
+import { useTranslation } from "react-i18next";
 import { 
     Mail, 
     Phone, 
@@ -15,36 +16,38 @@ import {
 const contactInfo = [
     {
         icon: <Mail className="h-6 w-6" />,
-        title: "Email",
+        titleKey: "contact.emailInfo",
         content: "support@saasify.com",
-        description: "We'll respond as soon as possible"
+        descKey: "contact.emailInfoDesc"
     },
     {
         icon: <Phone className="h-6 w-6" />,
-        title: "Phone",
+        titleKey: "contact.phone",
         content: "+1 (555) 123-4567",
-        description: "Mon-Fri from 8am to 6pm"
+        descKey: "contact.phoneDesc"
     },
     {
         icon: <MapPin className="h-6 w-6" />,
-        title: "Office",
+        titleKey: "contact.office",
         content: "123 Business Ave, Suite 100",
-        description: "San Francisco, CA 94107"
+        descKey: "contact.officeDesc"
     },
     {
         icon: <Clock className="h-6 w-6" />,
-        title: "Hours",
+        titleKey: "contact.hours",
         content: "Monday - Friday",
-        description: "9:00 AM - 6:00 PM PST"
+        descKey: "contact.hoursDesc"
     }
 ];
 
 export default function Contact() {
+    const { t } = useTranslation();
+
     return (
         <>
             <Seo 
-                title="Contact Us | SaaSify" 
-                description="Get in touch with our team. We're here to help you succeed with SaaSify." 
+                title={t("contact.title")} 
+                description={t("contact.description")} 
             />
             
             <div className="min-h-screen bg-background">
@@ -58,14 +61,14 @@ export default function Contact() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <Text 
-                                    label="Contact" 
+                                    label={t("contact.headline")} 
                                     className="text-4xl md:text-5xl font-bold text-primary mb-6" 
                                 />
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                    Get in Touch
+                                    {t("contact.subheadline")}
                                 </h1>
                                 <p className="text-xl text-muted-foreground">
-                                    Have questions? We're here to help. Send us a message and we'll respond as soon as possible.
+                                    {t("contact.description")}
                                 </p>
                             </motion.div>
                         </div>
@@ -85,64 +88,64 @@ export default function Contact() {
                                     className="bg-card p-8 rounded-lg shadow-sm"
                                 >
                                     <h2 className="text-2xl font-bold text-foreground mb-6">
-                                        Send us a Message
+                                        {t("contact.sendMessage")}
                                     </h2>
                                     <form className="space-y-6">
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div>
                                                 <label htmlFor="firstName" className="block text-sm font-medium text-foreground mb-1">
-                                                    First Name
+                                                    {t("contact.firstName")}
                                                 </label>
                                                 <Input 
                                                     id="firstName" 
-                                                    placeholder="John" 
+                                                    placeholder={t("contact.firstNamePlaceholder")} 
                                                     className="w-full"
                                                 />
                                             </div>
                                             <div>
                                                 <label htmlFor="lastName" className="block text-sm font-medium text-foreground mb-1">
-                                                    Last Name
+                                                    {t("contact.lastName")}
                                                 </label>
                                                 <Input 
                                                     id="lastName" 
-                                                    placeholder="Doe" 
+                                                    placeholder={t("contact.lastNamePlaceholder")} 
                                                     className="w-full"
                                                 />
                                             </div>
                                         </div>
                                         <div>
                                             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
-                                                Email
+                                                {t("contact.email")}
                                             </label>
                                             <Input 
                                                 id="email" 
                                                 type="email" 
-                                                placeholder="john@example.com" 
+                                                placeholder={t("contact.emailPlaceholder")} 
                                                 className="w-full"
                                             />
                                         </div>
                                         <div>
                                             <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-1">
-                                                Subject
+                                                {t("contact.subject")}
                                             </label>
                                             <Input 
                                                 id="subject" 
-                                                placeholder="How can we help?" 
+                                                placeholder={t("contact.subjectPlaceholder")} 
                                                 className="w-full"
                                             />
                                         </div>
                                         <div>
                                             <label htmlFor="message" className="block text-sm font-medium text-foreground mb-1">
-                                                Message
+                                                {t("contact.message")}
                                             </label>
                                             <Textarea 
                                                 id="message" 
-                                                placeholder="Your message here..." 
+                                                placeholder={t("contact.messagePlaceholder")} 
                                                 className="w-full min-h-[150px]"
                                             />
                                         </div>
                                         <Button className="w-full bg-primary hover:bg-primary/90">
-                                            Send Message
+                                            {t("contact.sendMsg")}
                                             <Send className="ml-2 h-4 w-4" />
                                         </Button>
                                     </form>
@@ -157,7 +160,7 @@ export default function Contact() {
                                         className="bg-card p-8 rounded-lg shadow-sm"
                                     >
                                         <h2 className="text-2xl font-bold text-foreground mb-6">
-                                            Contact Information
+                                            {t("contact.contactInfo")}
                                         </h2>
                                         <div className="space-y-6">
                                             {contactInfo.map((info, index) => (
@@ -167,13 +170,13 @@ export default function Contact() {
                                                     </div>
                                                     <div>
                                                         <h3 className="font-semibold text-foreground">
-                                                            {info.title}
+                                                            {t(info.titleKey)}
                                                         </h3>
                                                         <p className="text-muted-foreground">
                                                             {info.content}
                                                         </p>
                                                         <p className="text-sm text-muted-foreground">
-                                                            {info.description}
+                                                            {t(info.descKey)}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -189,17 +192,17 @@ export default function Contact() {
                                         className="bg-card p-8 rounded-lg shadow-sm"
                                     >
                                         <h2 className="text-2xl font-bold text-foreground mb-6">
-                                            Follow Us
+                                            {t("contact.followUs")}
                                         </h2>
                                         <div className="flex gap-4">
                                             <Button variant="outline" className="flex-1">
-                                                Twitter
+                                                {t("contact.twitter")}
                                             </Button>
                                             <Button variant="outline" className="flex-1">
-                                                LinkedIn
+                                                {t("contact.linkedin")}
                                             </Button>
                                             <Button variant="outline" className="flex-1">
-                                                GitHub
+                                                {t("contact.github")}
                                             </Button>
                                         </div>
                                     </motion.div>
@@ -211,4 +214,4 @@ export default function Contact() {
             </div>
         </>
     );
-} 
+}

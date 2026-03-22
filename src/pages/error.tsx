@@ -2,11 +2,13 @@ import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ApiError } from '@/lib/api/utils/error-handler';
 import { motion } from 'framer-motion';
+import { useTranslation } from "react-i18next";
 import { Home, RefreshCw } from 'lucide-react';
 
 export default function ErrorPage() {
     const error = useRouteError();
-    let errorMessage = 'একটি অপ্রত্যাশিত ত্রুটি ঘটেছে';
+    const { t } = useTranslation();
+    let errorMessage = t("common.errorUnexpected");
     let errorStatus = 500;
 
     if (isRouteErrorResponse(error)) {
@@ -29,7 +31,7 @@ export default function ErrorPage() {
                 <div className="mb-8">
                     <h1 className="text-9xl font-bold text-primary mb-4">{errorStatus}</h1>
                     <h2 className="text-2xl font-semibold text-foreground mb-4">
-                        {errorStatus === 404 ? 'পৃষ্ঠা পাওয়া যায়নি' : 'কিছু ভুল হয়েছে'}
+                        {errorStatus === 404 ? t("common.errorNotFound") : t("common.errorSomethingWrong")}
                     </h2>
                     <p className="text-muted-foreground mb-8">{errorMessage}</p>
                 </div>
@@ -42,7 +44,7 @@ export default function ErrorPage() {
                     >
                         <Link to="/">
                             <Home className="mr-2 h-4 w-4" />
-                            হোমে ফিরে যান
+                            {t("common.goHomeBtn")}
                         </Link>
                     </Button>
                     <Button
@@ -52,7 +54,7 @@ export default function ErrorPage() {
                         onClick={() => window.location.reload()}
                     >
                         <RefreshCw className="mr-2 h-4 w-4" />
-                        আবার চেষ্টা করুন
+                        {t("common.tryAgain")}
                     </Button>
                 </div>
             </motion.div>

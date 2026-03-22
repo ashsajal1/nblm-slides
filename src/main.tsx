@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import App from './App.tsx'
 import './index.css'
+import './i18n'
 import { ThemeProvider } from "@/components/theme-provider"
 import { HelmetProvider } from 'react-helmet-async'
 import { store, persistor } from './lib/store'

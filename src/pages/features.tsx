@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
+import { useTranslation } from "react-i18next";
 import { 
     Zap, 
     Shield, 
@@ -20,13 +21,13 @@ const features = [
         category: "Performance",
         items: [
             {
-                title: "Lightning Fast",
-                description: "Experience blazing fast performance with our optimized infrastructure.",
+                titleKey: "features.lightningFast",
+                descKey: "features.lightningFastDesc",
                 icon: <Zap className="h-6 w-6" />
             },
             {
-                title: "Real-time Updates",
-                description: "Get instant updates and notifications across all your devices.",
+                titleKey: "features.realtime",
+                descKey: "features.realtimeDesc",
                 icon: <Clock className="h-6 w-6" />
             }
         ]
@@ -35,13 +36,13 @@ const features = [
         category: "Security",
         items: [
             {
-                title: "Enterprise Security",
-                description: "Bank-grade security with end-to-end encryption and compliance.",
+                titleKey: "features.enterpriseSecurity",
+                descKey: "features.enterpriseSecurityDesc",
                 icon: <Shield className="h-6 w-6" />
             },
             {
-                title: "Data Protection",
-                description: "Advanced data protection and privacy controls for your information.",
+                titleKey: "features.dataProtection",
+                descKey: "features.dataProtectionDesc",
                 icon: <Lock className="h-6 w-6" />
             }
         ]
@@ -50,13 +51,13 @@ const features = [
         category: "Analytics",
         items: [
             {
-                title: "Advanced Analytics",
-                description: "Get detailed insights and analytics to grow your business.",
+                titleKey: "features.advancedAnalytics",
+                descKey: "features.advancedAnalyticsDesc",
                 icon: <BarChart3 className="h-6 w-6" />
             },
             {
-                title: "Custom Reports",
-                description: "Create and schedule custom reports for your team.",
+                titleKey: "features.customReports",
+                descKey: "features.customReportsDesc",
                 icon: <FileText className="h-6 w-6" />
             }
         ]
@@ -65,13 +66,13 @@ const features = [
         category: "Collaboration",
         items: [
             {
-                title: "Team Collaboration",
-                description: "Work seamlessly with your team in real-time.",
+                titleKey: "features.teamCollab",
+                descKey: "features.teamCollabDesc",
                 icon: <Users className="h-6 w-6" />
             },
             {
-                title: "Communication Tools",
-                description: "Built-in messaging and communication features.",
+                titleKey: "features.communication",
+                descKey: "features.communicationDesc",
                 icon: <MessageSquare className="h-6 w-6" />
             }
         ]
@@ -80,13 +81,13 @@ const features = [
         category: "Integration",
         items: [
             {
-                title: "Easy Integration",
-                description: "Connect with your favorite tools and services.",
+                titleKey: "features.easyIntegration",
+                descKey: "features.easyIntegrationDesc",
                 icon: <Settings className="h-6 w-6" />
             },
             {
-                title: "Global Access",
-                description: "Access your data from anywhere in the world.",
+                titleKey: "features.globalAccess",
+                descKey: "features.globalAccessDesc",
                 icon: <Globe className="h-6 w-6" />
             }
         ]
@@ -94,11 +95,13 @@ const features = [
 ];
 
 export default function Features() {
+    const { t } = useTranslation();
+
     return (
         <>
             <Seo 
-                title="Features | SaaSify" 
-                description="Discover the powerful features that make SaaSify the perfect solution for your business." 
+                title={t("features.title")} 
+                description={t("features.description")} 
             />
             
             <div className="min-h-screen bg-background">
@@ -112,15 +115,14 @@ export default function Features() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <Text 
-                                    label="Features" 
+                                    label={t("features.headline")} 
                                     className="text-4xl md:text-5xl font-bold text-primary mb-6" 
                                 />
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                    Everything You Need to Succeed
+                                    {t("features.subheadline")}
                                 </h1>
                                 <p className="text-xl text-muted-foreground">
-                                    Powerful features designed to help you streamline operations, 
-                                    boost productivity, and drive growth.
+                                    {t("features.description")}
                                 </p>
                             </motion.div>
                         </div>
@@ -139,7 +141,11 @@ export default function Features() {
                                         transition={{ duration: 0.5 }}
                                         className="text-2xl font-bold text-foreground mb-8"
                                     >
-                                        {category.category}
+                                        {t(category.category === "Performance" ? "features.performance" : 
+                                          category.category === "Security" ? "features.security" : 
+                                          category.category === "Analytics" ? "features.analytics" : 
+                                          category.category === "Collaboration" ? "features.collaboration" : 
+                                          "features.integration")}
                                     </motion.h2>
                                     
                                     <div className="grid md:grid-cols-2 gap-8">
@@ -157,10 +163,10 @@ export default function Features() {
                                                     </div>
                                                     <div>
                                                         <h3 className="text-xl font-semibold text-foreground mb-2">
-                                                            {feature.title}
+                                                            {t(feature.titleKey)}
                                                         </h3>
                                                         <p className="text-muted-foreground">
-                                                            {feature.description}
+                                                            {t(feature.descKey)}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -178,17 +184,17 @@ export default function Features() {
                     <div className="container mx-auto px-4">
                         <div className="max-w-3xl mx-auto text-center">
                             <h2 className="text-3xl font-bold text-foreground mb-4">
-                                Ready to Get Started?
+                                {t("features.ctaHeadline")}
                             </h2>
                             <p className="text-xl text-muted-foreground mb-8">
-                                Join thousands of businesses that trust SaaSify for their daily operations.
+                                {t("features.ctaSubheadline")}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Button size="lg" className="bg-primary hover:bg-primary/90">
-                                    Start Free Trial
+                                    {t("features.startTrial")}
                                 </Button>
                                 <Button size="lg" variant="outline">
-                                    Schedule Demo
+                                    {t("features.scheduleDemo")}
                                 </Button>
                             </div>
                         </div>
@@ -197,4 +203,4 @@ export default function Features() {
             </div>
         </>
     );
-} 
+}

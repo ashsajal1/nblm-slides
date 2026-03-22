@@ -2,64 +2,67 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
+import { useTranslation } from "react-i18next";
 import { Check, Sparkles } from "lucide-react";
 
 const plans = [
     {
-        name: "Starter",
+        nameKey: "pricing.starter",
         price: "29",
-        description: "Perfect for small teams and startups",
-        features: [
-            "Up to 5 team members",
-            "Basic analytics",
-            "24/7 email support",
-            "1GB storage",
-            "Basic integrations",
-            "Monthly reports"
+        descKey: "pricing.starterDesc",
+        featuresKey: [
+            "pricing.starterFeature1",
+            "pricing.starterFeature2",
+            "pricing.starterFeature3",
+            "pricing.starterFeature4",
+            "pricing.starterFeature5",
+            "pricing.starterFeature6"
         ],
         popular: false
     },
     {
-        name: "Professional",
+        nameKey: "pricing.professional",
         price: "79",
-        description: "Ideal for growing businesses",
-        features: [
-            "Up to 20 team members",
-            "Advanced analytics",
-            "Priority support",
-            "10GB storage",
-            "Advanced integrations",
-            "Custom reports",
-            "API access",
-            "Team collaboration"
+        descKey: "pricing.professionalDesc",
+        featuresKey: [
+            "pricing.professionalFeature1",
+            "pricing.professionalFeature2",
+            "pricing.professionalFeature3",
+            "pricing.professionalFeature4",
+            "pricing.professionalFeature5",
+            "pricing.professionalFeature6",
+            "pricing.professionalFeature7",
+            "pricing.professionalFeature8"
         ],
         popular: true
     },
     {
-        name: "Enterprise",
+        nameKey: "pricing.enterprise",
         price: "299",
-        description: "For large organizations",
-        features: [
-            "Unlimited team members",
-            "Enterprise analytics",
-            "24/7 phone support",
-            "Unlimited storage",
-            "Custom integrations",
-            "Advanced security",
-            "Dedicated account manager",
-            "Custom solutions",
-            "SLA guarantee"
+        descKey: "pricing.enterpriseDesc",
+        featuresKey: [
+            "pricing.enterpriseFeature1",
+            "pricing.enterpriseFeature2",
+            "pricing.enterpriseFeature3",
+            "pricing.enterpriseFeature4",
+            "pricing.enterpriseFeature5",
+            "pricing.enterpriseFeature6",
+            "pricing.enterpriseFeature7",
+            "pricing.enterpriseFeature8",
+            "pricing.enterpriseFeature9"
         ],
         popular: false
     }
 ];
 
 export default function Pricing() {
+    const { t } = useTranslation();
+
     return (
         <>
             <Seo 
-                title="Pricing | SaaSify" 
-                description="Choose the perfect plan for your business. Flexible pricing options for teams of all sizes." 
+                title={t("pricing.title")} 
+                description={t("pricing.description")} 
             />
             
             <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -73,14 +76,14 @@ export default function Pricing() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <Text 
-                                    label="Pricing" 
+                                    label={t("pricing.headline")} 
                                     className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6" 
                                 />
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                    Simple, Transparent Pricing
+                                    {t("pricing.subheadline")}
                                 </h1>
                                 <p className="text-xl text-muted-foreground">
-                                    Choose the perfect plan for your business. All plans include a 14-day free trial.
+                                    {t("pricing.description")}
                                 </p>
                             </motion.div>
                         </div>
@@ -112,22 +115,22 @@ export default function Pricing() {
                                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                                                 <span className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-6 py-2 rounded-full text-sm font-medium flex items-center gap-2 shadow-lg">
                                                     <Sparkles className="w-4 h-4" />
-                                                    Most Popular
+                                                    {t("pricing.mostPopular")}
                                                 </span>
                                             </div>
                                         )}
                                         
                                         <div className="text-center mb-8">
-                                            <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
+                                            <h3 className="text-2xl font-bold text-foreground mb-2">{t(plan.nameKey)}</h3>
                                             <div className="flex items-baseline justify-center gap-1">
                                                 <span className="text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">${plan.price}</span>
-                                                <span className="text-muted-foreground">/month</span>
+                                                <span className="text-muted-foreground">{t("pricing.month")}</span>
                                             </div>
-                                            <p className="text-muted-foreground mt-2">{plan.description}</p>
+                                            <p className="text-muted-foreground mt-2">{t(plan.descKey)}</p>
                                         </div>
 
                                         <ul className="space-y-4 mb-8">
-                                            {plan.features.map((feature, featureIndex) => (
+                                            {plan.featuresKey.map((featureKey, featureIndex) => (
                                                 <motion.li 
                                                     key={featureIndex} 
                                                     className="flex items-start gap-3"
@@ -136,7 +139,7 @@ export default function Pricing() {
                                                     transition={{ delay: featureIndex * 0.1 }}
                                                 >
                                                     <Check className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                                                    <span className="text-muted-foreground">{feature}</span>
+                                                    <span className="text-muted-foreground">{t(featureKey)}</span>
                                                 </motion.li>
                                             ))}
                                         </ul>
@@ -149,7 +152,7 @@ export default function Pricing() {
                                                     : 'bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary hover:shadow-lg text-secondary-foreground'
                                             } transition-all duration-300`}
                                         >
-                                            <span className="relative z-10">Get Started</span>
+                                            <span className="relative z-10">{t("pricing.getStarted")}</span>
                                             <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                                         </Button>
                                     </div>
@@ -168,27 +171,15 @@ export default function Pricing() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 className="text-3xl font-bold text-foreground text-center mb-12"
                             >
-                                Frequently Asked Questions
+                                {t("pricing.faqTitle")}
                             </motion.h2>
                             
                             <div className="space-y-8">
                                 {[
-                                    {
-                                        question: "Can I change plans later?",
-                                        answer: "Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle."
-                                    },
-                                    {
-                                        question: "What payment methods do you accept?",
-                                        answer: "We accept all major credit cards, PayPal, and bank transfers for annual plans."
-                                    },
-                                    {
-                                        question: "Is there a free trial?",
-                                        answer: "Yes, all plans come with a 14-day free trial. No credit card required to start."
-                                    },
-                                    {
-                                        question: "Do you offer refunds?",
-                                        answer: "Yes, we offer a 30-day money-back guarantee if you're not satisfied with our service."
-                                    }
+                                    { qKey: "pricing.faq1Q", aKey: "pricing.faq1A" },
+                                    { qKey: "pricing.faq2Q", aKey: "pricing.faq2A" },
+                                    { qKey: "pricing.faq3Q", aKey: "pricing.faq3A" },
+                                    { qKey: "pricing.faq4Q", aKey: "pricing.faq4A" }
                                 ].map((faq, index) => (
                                     <motion.div
                                         key={index}
@@ -198,10 +189,10 @@ export default function Pricing() {
                                         className="bg-card p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300"
                                     >
                                         <h3 className="text-xl font-semibold text-foreground mb-2">
-                                            {faq.question}
+                                            {t(faq.qKey)}
                                         </h3>
                                         <p className="text-muted-foreground">
-                                            {faq.answer}
+                                            {t(faq.aKey)}
                                         </p>
                                     </motion.div>
                                 ))}
@@ -219,17 +210,17 @@ export default function Pricing() {
                             className="max-w-3xl mx-auto text-center"
                         >
                             <h2 className="text-3xl font-bold text-foreground mb-4">
-                                Still have questions?
+                                {t("pricing.ctaHeadline")}
                             </h2>
                             <p className="text-xl text-muted-foreground mb-8">
-                                Our team is here to help you choose the right plan for your business.
+                                {t("pricing.ctaSubheadline")}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Button 
                                     size="lg"
                                     className="relative overflow-hidden group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-primary/25 transition-all duration-300 text-primary-foreground"
                                 >
-                                    <span className="relative z-10">Contact Sales</span>
+                                    <span className="relative z-10">{t("pricing.contactSales")}</span>
                                     <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                                 </Button>
                                 <Button 
@@ -237,7 +228,7 @@ export default function Pricing() {
                                     variant="secondary"
                                     className="relative overflow-hidden group bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary hover:shadow-lg transition-all duration-300 text-secondary-foreground"
                                 >
-                                    <span className="relative z-10">View Documentation</span>
+                                    <span className="relative z-10">{t("pricing.viewDocs")}</span>
                                     <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                                 </Button>
                             </div>
@@ -247,4 +238,4 @@ export default function Pricing() {
             </div>
         </>
     );
-} 
+}

@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
+import { useTranslation } from "react-i18next";
 import { 
     Book, 
     Search,
@@ -16,82 +17,84 @@ import { Input } from "@/components/ui/input";
 
 const sidebarItems = [
     {
-        title: "Getting Started",
+        titleKey: "docs.gettingStarted",
         items: [
-            { label: "Introduction", href: "#" },
-            { label: "Quick Start Guide", href: "#" },
-            { label: "Installation", href: "#" },
-            { label: "Configuration", href: "#" }
+            { labelKey: "docs.introduction", href: "#" },
+            { labelKey: "docs.quickStart", href: "#" },
+            { labelKey: "docs.installation", href: "#" },
+            { labelKey: "docs.configuration", href: "#" }
         ]
     },
     {
-        title: "Core Concepts",
+        titleKey: "docs.coreConcepts",
         items: [
-            { label: "Authentication", href: "#" },
-            { label: "Authorization", href: "#" },
-            { label: "Data Models", href: "#" },
-            { label: "API Reference", href: "#" }
+            { labelKey: "docs.authentication", href: "#" },
+            { labelKey: "docs.authorization", href: "#" },
+            { labelKey: "docs.dataModels", href: "#" },
+            { labelKey: "docs.apiReference", href: "#" }
         ]
     },
     {
-        title: "Features",
+        titleKey: "docs.features_label",
         items: [
-            { label: "User Management", href: "#" },
-            { label: "Team Collaboration", href: "#" },
-            { label: "Analytics", href: "#" },
-            { label: "Integrations", href: "#" }
+            { labelKey: "docs.userManagement", href: "#" },
+            { labelKey: "docs.teamCollab", href: "#" },
+            { labelKey: "docs.analytics_label", href: "#" },
+            { labelKey: "docs.integrations", href: "#" }
         ]
     },
     {
-        title: "Advanced",
+        titleKey: "docs.advanced",
         items: [
-            { label: "Customization", href: "#" },
-            { label: "Performance", href: "#" },
-            { label: "Security", href: "#" },
-            { label: "Deployment", href: "#" }
+            { labelKey: "docs.customization", href: "#" },
+            { labelKey: "docs.performance", href: "#" },
+            { labelKey: "docs.security_label", href: "#" },
+            { labelKey: "docs.deployment", href: "#" }
         ]
     }
 ];
 
 const quickLinks = [
     {
-        title: "API Reference",
-        description: "Complete API documentation and examples",
+        titleKey: "docs.apiRefTitle",
+        descKey: "docs.apiRefDesc",
         icon: <Code className="h-6 w-6" />
     },
     {
-        title: "User Guide",
-        description: "Detailed guides for all features",
+        titleKey: "docs.userGuideTitle",
+        descKey: "docs.userGuideDesc",
         icon: <Book className="h-6 w-6" />
     },
     {
-        title: "Configuration",
-        description: "System settings and customization",
+        titleKey: "docs.configTitle",
+        descKey: "docs.configDesc",
         icon: <Settings className="h-6 w-6" />
     },
     {
-        title: "Team Management",
-        description: "User roles and permissions",
+        titleKey: "docs.teamMgmtTitle",
+        descKey: "docs.teamMgmtDesc",
         icon: <Users className="h-6 w-6" />
     },
     {
-        title: "Database",
-        description: "Data models and relationships",
+        titleKey: "docs.databaseTitle",
+        descKey: "docs.databaseDesc",
         icon: <Database className="h-6 w-6" />
     },
     {
-        title: "Security",
-        description: "Security best practices",
+        titleKey: "docs.securityTitle",
+        descKey: "docs.securityDesc",
         icon: <Shield className="h-6 w-6" />
     }
 ];
 
 export default function Docs() {
+    const { t } = useTranslation();
+
     return (
         <>
             <Seo 
-                title="Documentation | SaaSify" 
-                description="Comprehensive documentation and guides for SaaSify." 
+                title={t("docs.title")} 
+                description={t("docs.description")} 
             />
             
             <div className="min-h-screen bg-background">
@@ -105,19 +108,19 @@ export default function Docs() {
                                 transition={{ duration: 0.5 }}
                             >
                                 <Text 
-                                    label="Documentation" 
+                                    label={t("docs.headline")} 
                                     className="text-4xl md:text-5xl font-bold text-primary mb-6" 
                                 />
                                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                    Everything You Need to Know
+                                    {t("docs.subheadline")}
                                 </h1>
                                 <p className="text-xl text-muted-foreground mb-8">
-                                    Comprehensive guides and documentation to help you get the most out of SaaSify.
+                                    {t("docs.description")}
                                 </p>
                                 <div className="relative max-w-2xl mx-auto">
                                     <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                                     <Input
-                                        placeholder="Search documentation..."
+                                        placeholder={t("docs.searchPlaceholder")}
                                         className="pl-12 py-6 text-lg"
                                     />
                                 </div>
@@ -145,10 +148,10 @@ export default function Docs() {
                                             </div>
                                             <div>
                                                 <h3 className="text-lg font-semibold text-foreground mb-2">
-                                                    {link.title}
+                                                    {t(link.titleKey)}
                                                 </h3>
                                                 <p className="text-muted-foreground">
-                                                    {link.description}
+                                                    {t(link.descKey)}
                                                 </p>
                                             </div>
                                         </div>
@@ -171,7 +174,7 @@ export default function Docs() {
                                             {sidebarItems.map((section, index) => (
                                                 <div key={index}>
                                                     <h3 className="font-semibold text-foreground mb-3">
-                                                        {section.title}
+                                                        {t(section.titleKey)}
                                                     </h3>
                                                     <ul className="space-y-2">
                                                         {section.items.map((item, itemIndex) => (
@@ -181,7 +184,7 @@ export default function Docs() {
                                                                     className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
                                                                 >
                                                                     <ChevronRight className="h-4 w-4" />
-                                                                    {item.label}
+                                                                    {t(item.labelKey)}
                                                                 </a>
                                                             </li>
                                                         ))}
@@ -195,50 +198,49 @@ export default function Docs() {
                                 {/* Main Content */}
                                 <div className="md:col-span-3">
                                     <div className="prose prose-lg dark:prose-invert max-w-none">
-                                        <h2>Getting Started with SaaSify</h2>
+                                        <h2>{t("docs.gettingStartedTitle")}</h2>
                                         <p>
-                                            Welcome to SaaSify! This guide will help you get up and running with our platform.
-                                            We'll cover everything from installation to advanced features.
+                                            {t("docs.gettingStartedWelcome")}
                                         </p>
 
-                                        <h3>Installation</h3>
+                                        <h3>{t("docs.installation")}</h3>
                                         <p>
-                                            To get started with SaaSify, you'll need to:
+                                            {t("docs.gettingStartedSteps")}
                                         </p>
                                         <ol>
-                                            <li>Create an account</li>
-                                            <li>Set up your workspace</li>
-                                            <li>Configure your settings</li>
-                                            <li>Invite your team members</li>
+                                            <li>{t("docs.step1")}</li>
+                                            <li>{t("docs.step2")}</li>
+                                            <li>{t("docs.step3")}</li>
+                                            <li>{t("docs.step4")}</li>
                                         </ol>
 
-                                        <h3>Quick Start</h3>
+                                        <h3>{t("docs.quickStartTitle")}</h3>
                                         <p>
-                                            Here's a quick overview of the main features:
+                                            {t("docs.quickStartOverview")}
                                         </p>
                                         <ul>
-                                            <li>User Management</li>
-                                            <li>Team Collaboration</li>
-                                            <li>Analytics Dashboard</li>
-                                            <li>API Integration</li>
+                                            <li>{t("docs.feature1")}</li>
+                                            <li>{t("docs.feature2")}</li>
+                                            <li>{t("docs.feature3")}</li>
+                                            <li>{t("docs.feature4")}</li>
                                         </ul>
 
                                         <div className="bg-muted p-4 rounded-lg my-6">
-                                            <h4 className="text-lg font-semibold mb-2">Pro Tip</h4>
+                                            <h4 className="text-lg font-semibold mb-2">{t("docs.proTip")}</h4>
                                             <p className="mb-0">
-                                                Use our API to automate common tasks and integrate with your existing tools.
+                                                {t("docs.proTipContent")}
                                             </p>
                                         </div>
 
-                                        <h3>Next Steps</h3>
+                                        <h3>{t("docs.nextStepsTitle")}</h3>
                                         <p>
-                                            Once you're familiar with the basics, check out our advanced guides for:
+                                            {t("docs.nextStepsDesc")}
                                         </p>
                                         <ul>
-                                            <li>Custom workflows</li>
-                                            <li>Advanced analytics</li>
-                                            <li>Security best practices</li>
-                                            <li>Performance optimization</li>
+                                            <li>{t("docs.nextStep1")}</li>
+                                            <li>{t("docs.nextStep2")}</li>
+                                            <li>{t("docs.nextStep3")}</li>
+                                            <li>{t("docs.nextStep4")}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -252,17 +254,17 @@ export default function Docs() {
                     <div className="container mx-auto px-4">
                         <div className="max-w-3xl mx-auto text-center">
                             <h2 className="text-3xl font-bold text-foreground mb-4">
-                                Need More Help?
+                                {t("docs.ctaHeadline")}
                             </h2>
                             <p className="text-xl text-muted-foreground mb-8">
-                                Our support team is here to help you with any questions.
+                                {t("docs.ctaSubheadline")}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Button className="bg-primary hover:bg-primary/90">
-                                    Contact Support
+                                    {t("docs.contactSupport")}
                                 </Button>
                                 <Button variant="outline">
-                                    Join Community
+                                    {t("docs.joinCommunity")}
                                 </Button>
                             </div>
                         </div>
@@ -271,4 +273,4 @@ export default function Docs() {
             </div>
         </>
     );
-} 
+}

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const schema = z.object({
     email: z.string().email().nonempty("ইমেইল প্রয়োজন"),
@@ -21,6 +22,7 @@ const schema = z.object({
 type Inputs = z.infer<typeof schema>;
 
 export default function Signup() {
+    const { t } = useTranslation();
     const {
         register,
         handleSubmit,
@@ -33,7 +35,7 @@ export default function Signup() {
 
     return (
         <>
-            <Seo title="সাইন আপ | ফ্ল্যাশকার্ড" description="আপনার ফ্ল্যাশকার্ড অ্যাকাউন্ট তৈরি করুন।" />
+            <Seo title={t("auth.signupTitle")} description={t("auth.signupDesc")} />
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="w-full md:flex md:min-h-screen">
                     {/* Left side - Text content */}
@@ -44,12 +46,12 @@ export default function Signup() {
                         className="hidden md:flex md:w-1/2 bg-primary/5 items-center justify-center p-8"
                     >
                         <div className="max-w-md text-center">
-                            <Text label="ফ্ল্যাশকার্ড" className="text-4xl font-bold text-primary mb-6" />
+                            <Text label={t("nav.brand")} className="text-4xl font-bold text-primary mb-6" />
                             <h2 className="text-3xl font-semibold text-foreground mb-4">
-                                ফ্ল্যাশকার্ডে যাত্রা শুরু করুন
+                                {t("auth.createAccount")}
                             </h2>
                             <p className="text-muted-foreground text-lg">
-                                আপনার পছন্দের বিষয়ে ফ্ল্যাশকার্ড তৈরি করুন এবং সহজে অধ্যয়ন করুন। আজই অ্যাকাউন্ট তৈরি করে শুরু করুন।
+                                {t("auth.joinCommunity")}
                             </p>
                         </div>
                     </motion.div>
@@ -64,10 +66,10 @@ export default function Signup() {
                         <div className="w-full max-w-md">
                             <div className="text-center mb-8 md:hidden">
                                 <Link to="/">
-                                    <Text label="ফ্ল্যাশকার্ড" className="text-3xl font-bold text-primary mb-2" />
+                                    <Text label={t("nav.brand")} className="text-3xl font-bold text-primary mb-2" />
                                 </Link>
-                                <h2 className="text-2xl font-semibold text-foreground">অ্যাকাউন্ট তৈরি করুন</h2>
-                                <p className="text-muted-foreground mt-2">আমাদের সম্প্রদায়ে যোগ দিন</p>
+                                <h2 className="text-2xl font-semibold text-foreground">{t("auth.createAccount")}</h2>
+                                <p className="text-muted-foreground mt-2">{t("auth.joinCommunity")}</p>
                             </div>
 
                             <div className="bg-card rounded-lg shadow-lg p-8">
@@ -75,7 +77,7 @@ export default function Signup() {
                                     <div className="space-y-4">
                                         <div>
                                             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
-                                                ইমেইল
+                                                {t("auth.email")}
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -86,7 +88,7 @@ export default function Signup() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="আপনার ইমেইল দিন" 
+                                                    placeholder={t("auth.emailPlaceholder")} 
                                                     type="email" 
                                                     {...register('email')} 
                                                 />
@@ -107,14 +109,14 @@ export default function Signup() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    সঠিক ইমেইল দিন
+                                                    {t("auth.invalidEmail")}
                                                 </motion.p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-                                                পাসওয়ার্ড
+                                                {t("auth.password")}
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -125,7 +127,7 @@ export default function Signup() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="পাসওয়ার্ড তৈরি করুন" 
+                                                    placeholder={t("auth.passwordPlaceholder")} 
                                                     type="password" 
                                                     {...register("password")} 
                                                 />
@@ -146,14 +148,14 @@ export default function Signup() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    পাসওয়ার্ড ৬-২০ অক্ষরের মধ্যে হতে হবে
+                                                    {t("auth.passwordLength")}
                                                 </motion.p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground mb-1">
-                                                পাসওয়ার্ড নিশ্চিত করুন
+                                                {t("auth.confirmPassword")}
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -164,7 +166,7 @@ export default function Signup() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="পাসওয়ার্ড আবার দিন" 
+                                                    placeholder={t("auth.confirmPasswordPlaceholder")} 
                                                     type="password" 
                                                     {...register("confirmPassword")} 
                                                 />
@@ -185,7 +187,7 @@ export default function Signup() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    {errors.confirmPassword.message}
+                                                    {t("auth.passwordMismatch")}
                                                 </motion.p>
                                             )}
                                         </div>
@@ -199,26 +201,25 @@ export default function Signup() {
                                             className="h-4 w-4 text-primary focus:ring-primary border-input rounded"
                                         />
                                         <label htmlFor="terms" className="ml-2 block text-sm text-muted-foreground">
-                                            আমি{' '}
+                                            {t("auth.termsAccept")}{' '}
                                             <Link to="/terms" className="text-primary hover:text-primary/80">
-                                                সেবার শর্তাবলী
+                                                {t("auth.termsLink")}
                                             </Link>{' '}
-                                            এবং{' '}
+                                            {t("auth.acceptTerms")}{' '}
                                             <Link to="/privacy" className="text-primary hover:text-primary/80">
-                                                গোপনীয়তা নীতি
+                                                {t("auth.privacyLink")}
                                             </Link>
-                                            {' '}গ্রহণ করছি
                                         </label>
                                     </div>
 
                                     <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
-                                        অ্যাকাউন্ট তৈরি করুন
+                                        {t("auth.createButton")}
                                     </Button>
 
                                     <p className="mt-6 text-center text-sm text-muted-foreground">
-                                        ইতিমধ্যে অ্যাকাউন্ট আছে?{' '}
+                                        {t("auth.hasAccount")}{' '}
                                         <Link to="/login" className="font-medium text-primary hover:text-primary/80">
-                                            লগইন করুন
+                                            {t("auth.loginNow")}
                                         </Link>
                                     </p>
                                 </form>

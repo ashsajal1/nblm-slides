@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +54,7 @@ import {
 } from "lucide-react";
 
 export default function SlidesPage() {
+    const { t } = useTranslation();
     const [decks, setDecks] = useState<FlashcardDeck[]>([]);
     const [topics, setTopics] = useState<Topic[]>([]);
     const [loading, setLoading] = useState(true);
@@ -228,11 +230,13 @@ export default function SlidesPage() {
         exit: (d: number) => ({ x: d < 0 ? 300 : -300, opacity: 0 }),
     };
 
+    const totalSlides = decks.reduce((acc, d) => acc + (Array.isArray(d.slides) ? d.slides.length : 0), 0);
+
     if (loading) return null;
 
     return (
         <>
-            <Seo title="স্লাইডস" description="ফ্ল্যাশকার্ড স্লাইডস" />
+            <Seo title={t("slides.title")} description={t("slides.description")} />
 
             <section className="relative w-full min-h-screen overflow-hidden bg-background">
                 <div className="absolute inset-0">
@@ -248,10 +252,10 @@ export default function SlidesPage() {
                     >
                         <div>
                             <h1 className="text-3xl font-bold text-foreground">
-                                স্লাইডস
+                                {t("slides.title")}
                             </h1>
                             <p className="text-muted-foreground mt-1">
-                                {decks.length} ডেক — {decks.reduce((acc, d) => acc + (Array.isArray(d.slides) ? d.slides.length : 0), 0)} স্লাইড
+                                {t("slides.deckCount", { deck: decks.length, slide: totalSlides })}
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
@@ -262,7 +266,7 @@ export default function SlidesPage() {
                                 className="gap-2"
                             >
                                 <Tag className="h-4 w-4" />
-                                টপিক
+                                {t("slides.topic")}
                             </Button>
                             {activeDeck && (
                                 <Button
@@ -276,7 +280,7 @@ export default function SlidesPage() {
                                     className="gap-2"
                                 >
                                     <ChevronLeft className="h-4 w-4" />
-                                    ফিরে যান
+                                    {t("slides.back")}
                                 </Button>
                             )}
                         </div>
@@ -298,29 +302,29 @@ export default function SlidesPage() {
                                         : "bg-card text-muted-foreground border-border hover:border-primary/50"
                                 }`}
                             >
-                                সব
+                                {t("slides.all")}
                             </button>
-                            {topics.map((t) => (
+                            {topics.map((topic) => (
                                 <button
-                                    key={t.id}
+                                    key={topic.id}
                                     onClick={() =>
                                         setFilterTopic(
-                                            filterTopic === t.id ? "all" : t.id
+                                            filterTopic === topic.id ? "all" : topic.id
                                         )
                                     }
                                     className={`px-3 py-1 rounded-full text-sm border transition-colors flex items-center gap-1.5 ${
-                                        filterTopic === t.id
+                                        filterTopic === topic.id
                                             ? "bg-primary text-primary-foreground border-primary"
                                             : "bg-card text-muted-foreground border-border hover:border-primary/50"
                                     }`}
                                 >
-                                    <span>{t.label}</span>
-                                    {t.isCustom && (
+                                    <span>{topic.label}</span>
+                                    {topic.isCustom && (
                                         <X
                                             className="h-3 w-3 hover:text-destructive"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleDeleteTopic(t.id);
+                                                handleDeleteTopic(topic.id);
                                             }}
                                         />
                                     )}
@@ -359,7 +363,6 @@ export default function SlidesPage() {
                                                     setCurrent(0);
                                                 }}
                                                 className="p-1.5 rounded-md hover:bg-muted transition-colors"
-                                                title="View"
                                             >
                                                 <BookOpen className="h-4 w-4 text-muted-foreground" />
                                             </button>
@@ -369,21 +372,19 @@ export default function SlidesPage() {
                                                     handleStartEditDeck(deck);
                                                 }}
                                                 className="p-1.5 rounded-md hover:bg-muted transition-colors"
-                                                title="Settings"
                                             >
                                                 <Settings2 className="h-4 w-4 text-muted-foreground" />
                                             </button>
                                             <button
                                                 onClick={() => setDeckToDelete(deck.id)}
                                                 className="p-1.5 rounded-md hover:bg-destructive/10 transition-colors"
-                                                title="Delete"
                                             >
                                                 <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
                                             </button>
                                         </div>
                                     </div>
                                     <div className="text-sm text-muted-foreground">
-                                        {Array.isArray(deck.slides) ? deck.slides.length : 0} স্লাইড
+                                        {Array.isArray(deck.slides) ? deck.slides.length : 0} {t("slides.slides")}
                                     </div>
                                 </motion.div>
                             ))}
@@ -405,7 +406,7 @@ export default function SlidesPage() {
                                         className="gap-1.5"
                                     >
                                         <PlusCircle className="h-4 w-4" />
-                                        স্লাইড যোগ
+                                        {t("slides.addSlide")}
                                     </Button>
                                     <Button
                                         size="sm"
@@ -414,7 +415,7 @@ export default function SlidesPage() {
                                         className="gap-1.5"
                                     >
                                         <Pencil className="h-4 w-4" />
-                                        এডিট
+                                        {t("slides.edit")}
                                     </Button>
                                 </div>
                             </div>
@@ -426,9 +427,9 @@ export default function SlidesPage() {
                                         <thead>
                                             <tr className="border-b bg-muted/50">
                                                 <th className="text-left px-4 py-3 font-medium text-muted-foreground w-12">#</th>
-                                                <th className="text-left px-4 py-3 font-medium text-muted-foreground">প্রশ্ন</th>
-                                                <th className="text-left px-4 py-3 font-medium text-muted-foreground">উত্তর</th>
-                                                <th className="text-right px-4 py-3 font-medium text-muted-foreground w-24">অ্যাকশন</th>
+                                                <th className="text-left px-4 py-3 font-medium text-muted-foreground">{t("slides.question")}</th>
+                                                <th className="text-left px-4 py-3 font-medium text-muted-foreground">{t("slides.answer")}</th>
+                                                <th className="text-right px-4 py-3 font-medium text-muted-foreground w-24">{t("slides.actions")}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -488,7 +489,7 @@ export default function SlidesPage() {
                                                     onClick={() => setShowAnswer((s) => !s)}
                                                     className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
                                                 >
-                                                    {showAnswer ? "প্রশ্ন দেখুন" : "উত্তর দেখুন"}
+                                                    {showAnswer ? t("home.showQuestion") : t("home.showAnswer")}
                                                 </button>
                                                 {showAnswer && (
                                                     <motion.div
@@ -535,7 +536,7 @@ export default function SlidesPage() {
                     {filteredDecks.length === 0 && viewMode === "grid" && (
                         <div className="text-center py-16 text-muted-foreground">
                             <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                            <p>কোনো ডেক পাওয়া যায়নি।</p>
+                            <p>{t("slides.noDeck")}</p>
                         </div>
                     )}
                 </div>
@@ -545,32 +546,32 @@ export default function SlidesPage() {
             <Dialog open={editSlideIndex !== null} onOpenChange={(o) => !o && setEditSlideIndex(null)}>
                 <DialogContent className="sm:max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>স্লাইড এডিট করুন</DialogTitle>
+                        <DialogTitle>{t("slides.editSlide")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-2">
                         <div className="space-y-2">
-                            <Label>প্রশ্ন</Label>
+                            <Label>{t("slides.question")}</Label>
                             <Input
                                 value={editQuestion}
                                 onChange={(e) => setEditQuestion(e.target.value)}
-                                placeholder="প্রশ্ন লিখুন"
+                                placeholder={t("slides.questionPlaceholder")}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>উত্তর</Label>
+                            <Label>{t("slides.answer")}</Label>
                             <Input
                                 value={editAnswer}
                                 onChange={(e) => setEditAnswer(e.target.value)}
-                                placeholder="উত্তর লিখুন"
+                                placeholder={t("slides.answerPlaceholder")}
                             />
                         </div>
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setEditSlideIndex(null)}>
-                            বাতিল
+                            {t("home.cancel")}
                         </Button>
                         <Button onClick={handleSaveSlide} disabled={!editQuestion.trim()}>
-                            সেভ করুন
+                            {t("home.save")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -580,32 +581,32 @@ export default function SlidesPage() {
             <Dialog open={showAddSlideDialog} onOpenChange={setShowAddSlideDialog}>
                 <DialogContent className="sm:max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>নতুন স্লাইড যোগ করুন</DialogTitle>
+                        <DialogTitle>{t("slides.addNewSlide")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-2">
                         <div className="space-y-2">
-                            <Label>প্রশ্ন</Label>
+                            <Label>{t("slides.question")}</Label>
                             <Input
                                 value={addQuestion}
                                 onChange={(e) => setAddQuestion(e.target.value)}
-                                placeholder="প্রশ্ন লিখুন"
+                                placeholder={t("slides.questionPlaceholder")}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>উত্তর</Label>
+                            <Label>{t("slides.answer")}</Label>
                             <Input
                                 value={addAnswer}
                                 onChange={(e) => setAddAnswer(e.target.value)}
-                                placeholder="উত্তর লিখুন"
+                                placeholder={t("slides.answerPlaceholder")}
                             />
                         </div>
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setShowAddSlideDialog(false)}>
-                            বাতিল
+                            {t("home.cancel")}
                         </Button>
                         <Button onClick={handleAddSlide} disabled={!addQuestion.trim()}>
-                            যোগ করুন
+                            {t("slides.addSlide")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -615,18 +616,18 @@ export default function SlidesPage() {
             <Dialog open={showTopicDialog} onOpenChange={setShowTopicDialog}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>টপিক ম্যানেজ করুন</DialogTitle>
+                        <DialogTitle>{t("slides.manageTopics")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3 py-2">
-                        {topics.map((t) => (
+                        {topics.map((topic) => (
                             <div
-                                key={t.id}
+                                key={topic.id}
                                 className="flex items-center justify-between px-3 py-2 bg-card border rounded-lg"
                             >
-                                <span className="text-sm font-medium">{t.label}</span>
-                                {t.isCustom ? (
+                                <span className="text-sm font-medium">{topic.label}</span>
+                                {topic.isCustom ? (
                                     <button
-                                        onClick={() => handleDeleteTopic(t.id)}
+                                        onClick={() => handleDeleteTopic(topic.id)}
                                         className="text-muted-foreground hover:text-destructive transition-colors"
                                     >
                                         <Trash2 className="h-4 w-4" />
@@ -638,7 +639,7 @@ export default function SlidesPage() {
                         ))}
                         <div className="flex gap-2 pt-2">
                             <Input
-                                placeholder="নতুন টপিকের নাম"
+                                placeholder={t("slides.newTopicName")}
                                 value={newTopicLabel}
                                 onChange={(e) => setNewTopicLabel(e.target.value)}
                                 onKeyDown={(e) => e.key === "Enter" && handleCreateTopic()}
@@ -655,30 +656,30 @@ export default function SlidesPage() {
             <Dialog open={showDeckEditDialog} onOpenChange={setShowDeckEditDialog}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>ডেক এডিট করুন</DialogTitle>
+                        <DialogTitle>{t("slides.editDeck")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-2">
                         <div className="space-y-2">
-                            <Label>টাইটেল</Label>
+                            <Label>{t("slides.title_label")}</Label>
                             <Input
                                 value={editDeckTitle}
                                 onChange={(e) => setEditDeckTitle(e.target.value)}
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label>টপিক</Label>
+                            <Label>{t("slides.topic_label")}</Label>
                             <div className="flex flex-wrap gap-2">
-                                {topics.map((t) => (
+                                {topics.map((topic) => (
                                     <button
-                                        key={t.id}
-                                        onClick={() => setEditDeckTopic(t.id)}
+                                        key={topic.id}
+                                        onClick={() => setEditDeckTopic(topic.id as DeckTopic)}
                                         className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                                            editDeckTopic === t.id
+                                            editDeckTopic === topic.id
                                                 ? "bg-primary text-primary-foreground border-primary"
                                                 : "bg-card text-muted-foreground border-border hover:border-primary/50"
                                         }`}
                                     >
-                                        {t.label}
+                                        {topic.label}
                                     </button>
                                 ))}
                             </div>
@@ -686,10 +687,10 @@ export default function SlidesPage() {
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setShowDeckEditDialog(false)}>
-                            বাতিল
+                            {t("home.cancel")}
                         </Button>
                         <Button onClick={handleSaveDeck} disabled={!editDeckTitle.trim()}>
-                            সেভ করুন
+                            {t("home.save")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>
@@ -698,13 +699,13 @@ export default function SlidesPage() {
             <AlertDialog open={slideToDelete !== null} onOpenChange={(o) => !o && setSlideToDelete(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>স্লাইড মুছে ফেলুন</AlertDialogTitle>
+                        <AlertDialogTitle>{t("slides.deleteSlide")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            এই স্লাইডটি স্থায়ীভাবে মুছে ফেলা হবে। এটি পুনরুদ্ধার করা যাবে না।
+                            {t("slides.deleteSlideConfirm")}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogCancel>{t("home.cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={() => {
                                 if (slideToDelete !== null) {
@@ -714,7 +715,7 @@ export default function SlidesPage() {
                             }}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                            মুছে ফেলুন
+                            {t("home.delete")}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
@@ -723,13 +724,13 @@ export default function SlidesPage() {
             <AlertDialog open={deckToDelete !== null} onOpenChange={(o) => !o && setDeckToDelete(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>ডেক মুছে ফেলুন</AlertDialogTitle>
+                        <AlertDialogTitle>{t("slides.deleteDeck")}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            এই ডেকটি স্থায়ীভাবে মুছে ফেলা হবে। এটি পুনরুদ্ধার করা যাবে না।
+                            {t("slides.deleteDeckConfirm")}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>বাতিল</AlertDialogCancel>
+                        <AlertDialogCancel>{t("home.cancel")}</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={() => {
                                 if (deckToDelete) {
@@ -739,7 +740,7 @@ export default function SlidesPage() {
                             }}
                             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         >
-                            মুছে ফেলুন
+                            {t("home.delete")}
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

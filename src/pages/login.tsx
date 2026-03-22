@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import Seo from '../components/Seo';
 import Text from "@/components/custom-ui/text";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/lib/store";
 import { login } from "@/lib/store/thunks/auth.thunks";
@@ -23,6 +24,7 @@ export default function Login() {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const { loading, error } = useAppSelector((state) => state.auth);
+    const { t } = useTranslation();
 
     const {
         register,
@@ -38,17 +40,18 @@ export default function Login() {
             
             dispatch(addToast({
                 type: 'success',
-                message: 'সফলভাবে লগইন হয়েছে!',
+                message: t("auth.loginSuccess"),
             }));
 
             navigate('/dashboard');
-        } catch (err) {
+        } catch (_err) {
+            // handle login error silently
         }
     };
 
     return (
         <>
-            <Seo title="লগইন | ফ্ল্যাশকার্ড" description="আপনার অ্যাকাউন্টে লগইন করুন।" />
+            <Seo title={t("auth.loginTitle")} description={t("auth.loginDesc")} />
             <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="w-full md:flex md:min-h-screen">
                     {/* Left side - Text content */}
@@ -59,12 +62,12 @@ export default function Login() {
                         className="hidden md:flex md:w-1/2 bg-primary/5 items-center justify-center p-8"
                     >
                         <div className="max-w-md text-center">
-                            <Text label="ফ্ল্যাশকার্ড" className="text-4xl font-bold text-primary mb-6" />
+                            <Text label={t("nav.brand")} className="text-4xl font-bold text-primary mb-6" />
                             <h2 className="text-3xl font-semibold text-foreground mb-4">
-                                ফ্ল্যাশকার্ডে স্বাগতম
+                                {t("auth.welcomeBack")}
                             </h2>
                             <p className="text-muted-foreground text-lg">
-                                আপনার পছন্দের বিষয়ে ফ্ল্যাশকার্ড তৈরি করুন এবং সহজে অধ্যয়ন করুন। লগইন করে আপনার যাত্রা শুরু করুন।
+                                {t("auth.loginPrompt")}
                             </p>
                         </div>
                     </motion.div>
@@ -79,10 +82,10 @@ export default function Login() {
                         <div className="w-full max-w-md">
                             <div className="text-center mb-8 md:hidden">
                                 <Link to="/">
-                                    <Text label="ফ্ল্যাশকার্ড" className="text-3xl font-bold text-primary mb-2" />
+                                    <Text label={t("nav.brand")} className="text-3xl font-bold text-primary mb-2" />
                                 </Link>
-                                <h2 className="text-2xl font-semibold text-foreground">স্বাগতম</h2>
-                                <p className="text-muted-foreground mt-2">আপনার অ্যাকাউন্টে লগইন করুন</p>
+                                <h2 className="text-2xl font-semibold text-foreground">{t("auth.welcomeBack")}</h2>
+                                <p className="text-muted-foreground mt-2">{t("auth.loginPrompt")}</p>
                             </div>
 
                             <div className="bg-card rounded-lg shadow-lg p-8">
@@ -99,7 +102,7 @@ export default function Login() {
                                     <div className="space-y-4">
                                         <div>
                                             <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1">
-                                                ইমেইল
+                                                {t("auth.email")}
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -110,7 +113,7 @@ export default function Login() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="আপনার ইমেইল দিন" 
+                                                    placeholder={t("auth.emailPlaceholder")} 
                                                     type="email" 
                                                     {...register('email')} 
                                                 />
@@ -131,14 +134,14 @@ export default function Login() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    সঠিক ইমেইল দিন
+                                                    {t("auth.invalidEmail")}
                                                 </motion.p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label htmlFor="password" className="block text-sm font-medium text-foreground mb-1">
-                                                পাসওয়ার্ড
+                                                {t("auth.password")}
                                             </label>
                                             <div className="relative">
                                                 <Input 
@@ -149,7 +152,7 @@ export default function Login() {
                                                             ? "border-destructive focus-visible:ring-destructive pr-10" 
                                                             : "focus-visible:ring-primary"
                                                     )} 
-                                                    placeholder="আপনার পাসওয়ার্ড দিন" 
+                                                    placeholder={t("auth.passwordPlaceholder")} 
                                                     type="password" 
                                                     {...register("password")} 
                                                 />
@@ -170,7 +173,7 @@ export default function Login() {
                                                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                                                     </svg>
-                                                    পাসওয়ার্ড ৬-২০ অক্ষরের মধ্যে হতে হবে
+                                                    {t("auth.passwordLength")}
                                                 </motion.p>
                                             )}
                                         </div>
@@ -185,12 +188,12 @@ export default function Login() {
                                                 className="h-4 w-4 text-primary focus:ring-primary border-input rounded"
                                             />
                                             <label htmlFor="remember-me" className="ml-2 block text-sm text-muted-foreground">
-                                                মনে রাখুন
+                                                {t("auth.rememberMe")}
                                             </label>
                                         </div>
 
                                         <Link to="/forgot-password" className="text-sm text-primary hover:text-primary/80">
-                                            পাসওয়ার্ড ভুলে গেছেন?
+                                            {t("auth.forgotPassword")}
                                         </Link>
                                     </div>
 
@@ -199,13 +202,13 @@ export default function Login() {
                                         className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                                         disabled={loading}
                                     >
-                                        {loading ? 'লগইন হচ্ছে...' : 'লগইন'}
+                                        {loading ? t("auth.loggingIn") : t("auth.loginButton")}
                                     </Button>
 
                                     <p className="mt-6 text-center text-sm text-muted-foreground">
-                                        অ্যাকাউন্ট নেই?{' '}
+                                        {t("auth.noAccount")}{' '}
                                         <Link to="/signup" className="font-medium text-primary hover:text-primary/80">
-                                            এখনই সাইন আপ করুন
+                                            {t("auth.signupNow")}
                                         </Link>
                                     </p>
                                 </form>

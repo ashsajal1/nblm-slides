@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { HiOutlineXMark } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ModeToggle } from '../mode-toggle';
+import { LanguageSwitcher } from '../language-switcher';
 import Text from '../custom-ui/text';
 import { 
     Sparkles, 
@@ -15,34 +17,36 @@ import {
     HelpCircle
 } from 'lucide-react';
 
-const menuItems = [
-    {
-        title: "মূল",
-        items: [
-            { to: "/features", label: "ফিচার", icon: <Sparkles className="w-4 h-4" /> },
-            { to: "/pricing", label: "মূল্য", icon: <CreditCard className="w-4 h-4" /> },
-            { to: "/docs", label: "ডকুমেন্টেশন", icon: <BookOpen className="w-4 h-4" /> },
-            { to: "/blog", label: "ব্লগ", icon: <Newspaper className="w-4 h-4" /> },
-        ]
-    },
-    {
-        title: "অ্যাকাউন্ট",
-        items: [
-            { to: "/login", label: "লগইন", icon: <LogIn className="w-4 h-4" /> },
-            { to: "/signup", label: "অ্যাকাউন্ট তৈরি", icon: <UserPlus className="w-4 h-4" /> },
-        ]
-    },
-    {
-        title: "রিসোর্স",
-        items: [
-            { to: "/analytics", label: "অ্যানালিটিক্স", icon: <BarChart3 className="w-4 h-4" /> },
-            { to: "/settings", label: "সেটিংস", icon: <Settings className="w-4 h-4" /> },
-            { to: "/help", label: "সাহায্য কেন্দ্র", icon: <HelpCircle className="w-4 h-4" /> },
-        ]
-    }
-];
-
 export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, handleClose: () => void }) {
+    const { t } = useTranslation();
+
+    const menuItems = [
+        {
+            title: t("nav.main"),
+            items: [
+                { to: "/features", label: t("nav.features"), icon: <Sparkles className="w-4 h-4" /> },
+                { to: "/pricing", label: t("nav.pricing"), icon: <CreditCard className="w-4 h-4" /> },
+                { to: "/docs", label: t("nav.docs"), icon: <BookOpen className="w-4 h-4" /> },
+                { to: "/blog", label: t("nav.blog"), icon: <Newspaper className="w-4 h-4" /> },
+            ]
+        },
+        {
+            title: t("nav.account"),
+            items: [
+                { to: "/login", label: t("nav.login"), icon: <LogIn className="w-4 h-4" /> },
+                { to: "/signup", label: t("nav.signup"), icon: <UserPlus className="w-4 h-4" /> },
+            ]
+        },
+        {
+            title: t("nav.resources"),
+            items: [
+                { to: "/analytics", label: t("nav.analytics"), icon: <BarChart3 className="w-4 h-4" /> },
+                { to: "/settings", label: t("nav.settings"), icon: <Settings className="w-4 h-4" /> },
+                { to: "/help", label: t("nav.help"), icon: <HelpCircle className="w-4 h-4" /> },
+            ]
+        }
+    ];
+
     return (
         <AnimatePresence mode='wait'>
             {isOpen && (
@@ -72,9 +76,16 @@ export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, hand
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.2 }}
                             >
-                                <Text className='text-xl font-bold text-primary' label='ফ্ল্যাশকার্ড' />
+                                <Text className='text-xl font-bold text-primary' label={t("nav.brand")} />
                             </motion.div>
                             <div className="flex items-center gap-2">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    <LanguageSwitcher />
+                                </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}

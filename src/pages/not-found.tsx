@@ -2,12 +2,15 @@ import { Button } from '@/components/ui/button'
 import { Link } from 'react-router-dom'
 import Seo from '../components/Seo'
 import { motion } from 'framer-motion'
+import { useTranslation } from "react-i18next";
 import { HiOutlineArrowLeft, HiOutlineHome } from 'react-icons/hi2'
 
 export default function NotFound() {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Seo title="৪০৪ | পৃষ্ঠা পাওয়া যায়নি" description="আপনি যে পৃষ্ঠাটি খুঁজছেন তা পাওয়া যায়নি।" />
+            <Seo title={t("common.notFoundTitle")} description={t("common.notFoundDesc")} />
             <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -21,7 +24,7 @@ export default function NotFound() {
                         transition={{ delay: 0.3 }}
                         className="text-4xl md:text-5xl font-bold text-primary dark:text-primary mb-4"
                     >
-                        ওহ! পৃষ্ঠা পাওয়া যায়নি
+                        {t("common.notFoundHeadline")}
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -29,7 +32,7 @@ export default function NotFound() {
                         transition={{ delay: 0.4 }}
                         className="text-gray-600 dark:text-gray-400 text-lg mb-8 max-w-md mx-auto"
                     >
-                        আপনি যে পৃষ্ঠাটি খুঁজছেন তা পাওয়া যায়নি বা সরিয়ে দেওয়া হয়েছে।
+                        {t("common.notFoundDesc2")}
                     </motion.p>
 
                     <motion.div
@@ -44,12 +47,12 @@ export default function NotFound() {
                             className="w-full sm:w-auto"
                         >
                             <HiOutlineArrowLeft className="mr-2 h-5 w-5" />
-                            ফিরে যান
+                            {t("common.goBack")}
                         </Button>
                         <Link to='/' className="w-full sm:w-auto">
                             <Button className="w-full">
                                 <HiOutlineHome className="mr-2 h-5 w-5" />
-                                হোমে যান
+                                {t("common.goHome")}
                             </Button>
                         </Link>
                     </motion.div>

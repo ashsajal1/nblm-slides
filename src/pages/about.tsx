@@ -2,23 +2,24 @@ import Seo from '../components/Seo';
 import { Button } from '@/components/ui/button';
 import { motion } from "framer-motion";
 import Text from "@/components/custom-ui/text";
+import { useTranslation } from "react-i18next";
 import { ArrowRight, Target, Zap, Shield } from "lucide-react";
 
 const values = [
   {
     icon: <Target className="w-6 h-6" />,
-    title: "আমাদের লক্ষ্য",
-    description: "উদ্ভাবনী সমাধান দিয়ে ব্যবসায়িক প্রবৃদ্ধি ও সাফল্য নিশ্চিত করা।"
+    titleKey: "common.ourMission",
+    descKey: "common.missionDesc"
   },
   {
     icon: <Zap className="w-6 h-6" />,
-    title: "উদ্ভাবন",
-    description: "আমরা সর্বদা শিল্পের মান নির্ধারণকারী অত্যাধুনিক সমাধান প্রদান করতে সীমানা ঠেলে যাই।"
+    titleKey: "common.innovation",
+    descKey: "common.innovationDesc"
   },
   {
     icon: <Shield className="w-6 h-6" />,
-    title: "বিশ্বাস ও নিরাপত্তা",
-    description: "আপনার ডেটা নিরাপত্তা আমাদের সর্বোচ্চ অগ্রাধিকার। আমরা সর্বোচ্চ মানের ডেটা সুরক্ষা বজায় রাখি।"
+    titleKey: "common.trustSecurity",
+    descKey: "common.trustSecurityDesc"
   }
 ];
 
@@ -41,11 +42,13 @@ const team = [
 ];
 
 export default function About() {
+  const { t } = useTranslation();
+
   return (
     <>
       <Seo 
-        title="আমাদের সম্পর্কে | ফ্ল্যাশকার্ড" 
-        description="ফ্ল্যাশকার্ড - আপনার পছন্দের বিষয়ে সহজে অধ্যয়ন করুন।" 
+        title={t("common.aboutTitle")} 
+        description={t("common.aboutDesc")} 
       />
       
       <div className="min-h-screen bg-gradient-to-b from-background to-muted/30">
@@ -59,21 +62,21 @@ export default function About() {
                 transition={{ duration: 0.5 }}
               >
                 <Text 
-                  label="আমাদের সম্পর্কে" 
+                  label={t("common.aboutHeadline")} 
                   className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-6" 
                 />
                 <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  আপনার পছন্দের বিষয়ে শিখুন
+                  {t("common.aboutSubheadline")}
                 </h1>
                 <p className="text-xl text-muted-foreground mb-8">
-                  আমরা একটি দল যারা শিক্ষার্থীদের সহজে ও কার্যকরভাবে শেখাতে সাহায্য করতে নিবেদিত।
+                  {t("common.aboutDesc")}
                 </p>
                 <Button 
                   size="lg"
                   className="relative overflow-hidden group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-primary/25 transition-all duration-300 text-primary-foreground"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    আমাদের সাথে যোগ দিন
+                    {t("common.joinUs")}
                     <ArrowRight className="w-4 h-4" />
                   </span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
@@ -99,10 +102,10 @@ export default function About() {
                     {value.icon}
                   </div>
                   <h3 className="text-xl font-semibold text-foreground mb-2">
-                    {value.title}
+                    {t(value.titleKey)}
                   </h3>
                   <p className="text-muted-foreground">
-                    {value.description}
+                    {t(value.descKey)}
                   </p>
                 </motion.div>
               ))}
@@ -115,10 +118,10 @@ export default function About() {
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                আমাদের দলের সাথে পরিচিত হন
+                {t("common.teamSection")}
               </h2>
               <p className="text-xl text-muted-foreground">
-                আমাদের সাফল্যের পেছনে নিবেদিত মানুষরা
+                {t("common.teamSubheadline")}
               </p>
             </div>
             
@@ -157,17 +160,17 @@ export default function About() {
               className="max-w-3xl mx-auto text-center bg-card p-8 rounded-2xl shadow-sm"
             >
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                আজই শুরু করুন?
+                {t("common.startToday")}
               </h2>
               <p className="text-xl text-muted-foreground mb-8">
-                হাজারো শিক্ষার্থী ইতিমধ্যে আমাদের ফ্ল্যাশকার্ড ব্যবহার করছে
+                {t("common.startTodayDesc")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg"
                   className="relative overflow-hidden group bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg hover:shadow-primary/25 transition-all duration-300 text-primary-foreground"
                 >
-                  <span className="relative z-10">শুরু করুন</span>
+                  <span className="relative z-10">{t("common.start")}</span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 </Button>
                 <Button 
@@ -175,7 +178,7 @@ export default function About() {
                   variant="secondary"
                   className="relative overflow-hidden group bg-gradient-to-r from-secondary to-secondary/90 hover:from-secondary/90 hover:to-secondary hover:shadow-lg transition-all duration-300 text-secondary-foreground"
                 >
-                  <span className="relative z-10">যোগাযোগ করুন</span>
+                  <span className="relative z-10">{t("common.contactBtn")}</span>
                   <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 </Button>
               </div>
