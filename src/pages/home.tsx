@@ -47,18 +47,6 @@ import {
     FolderOpen,
 } from "lucide-react";
 
-const slideVariants = {
-    enter: (direction: number) => ({
-        x: direction > 0 ? 400 : -400,
-        opacity: 0,
-    }),
-    center: { x: 0, opacity: 1 },
-    exit: (direction: number) => ({
-        x: direction < 0 ? 400 : -400,
-        opacity: 0,
-    }),
-};
-
 const swipeVariants = {
     enter: (direction: number) => ({
         y: direction > 0 ? 400 : -400,
@@ -119,7 +107,6 @@ export default function Home() {
     const [decks, setDecks] = useState<FlashcardDeck[]>([]);
     const [activeDeckId, setActiveId] = useState<string | null>(null);
     const [current, setCurrent] = useState(0);
-    const [direction, setDirection] = useState(0);
     const [swipeDirection, setSwipeDirection] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
@@ -309,7 +296,6 @@ export default function Home() {
     const paginate = useCallback(
         (newDirection: number) => {
             setShowAnswer(false);
-            setDirection(newDirection);
             setCurrent((prev) => {
                 const next = prev + newDirection;
                 if (next < 0) return slides.length - 1;
@@ -530,7 +516,7 @@ export default function Home() {
                                         drag="y"
                                         dragConstraints={{ top: 0, bottom: 0 }}
                                         dragElastic={1}
-                                        onDragEnd={(e, info) => {
+                                        onDragEnd={(_, info) => {
                                             if (info.offset.y > 100) {
                                                 paginateVertical(-1);
                                             } else if (info.offset.y < -100) {
@@ -620,7 +606,7 @@ export default function Home() {
                                             <button
                                                 key={i}
                                                 onClick={() => {
-                                                    setDirection(
+                                                    setSwipeDirection(
                                                         i > current ? 1 : -1
                                                     );
                                                     setCurrent(i);
