@@ -75,21 +75,29 @@ Google NotebookLM can export flashcards as a CSV file. Follow these steps to imp
 2. Create a new Notebook or open an existing one
 3. Add sources (PDFs, websites, YouTube videos, Google Docs) for NotebookLM to analyze
 
-### Step 2: Generate Quiz (Flashcards)
+### Step 2: Install NotebookLM Flashcard Exporter
 
-1. In your Notebook, find the **Quiz** button or type a prompt like:
+Google NotebookLM doesn't export flashcards directly to CSV. Use the **NotebookLM Ultra Exporter** Chrome extension to convert your flashcard sets:
+
+1. Install [NotebookLM Ultra Exporter](https://chromewebstore.google.com/detail/notebooklm-ultra-exporter/afchokljnhhggkhedfbmkcmdagjmjchj) from the Chrome Web Store
+2. Click the extension icon in Chrome and grant permissions to NotebookLM
+3. Open your NotebookLM notebook with flashcards
+
+### Step 3: Export Flashcards as CSV
+
+1. In your NotebookLM notebook, click the **Quiz** button or type:
    ```
-   Generate a quiz with 10 multiple choice questions about [topic]
+   Generate a quiz with flashcards about [topic]
    ```
-2. NotebookLM will create a quiz with questions and answers
-3. Click the **Download** button on the quiz card
-4. Select **CSV** format to download
+2. NotebookLM will create a set of flashcards
+3. Click the **NotebookLM Ultra Exporter** extension icon
+4. Select **Export to CSV** — it will generate a properly formatted CSV file and download it automatically
 
-> **Note:** If NotebookLM doesn't offer CSV export directly, you may need to use the Audio Overview feature or copy-paste content. Some NotebookLM users export to Google Docs first, then format as CSV manually.
+> **Note:** If you don't use the exporter extension, NotebookLM's built-in download may export as JSON or text format, which will need manual conversion to CSV.
 
-### Step 3: Convert to App Format (if needed)
+### Step 4: Convert to App Format (if needed)
 
-The exported CSV format may vary. If the app shows an "Invalid CSV format" error, ensure your CSV has this structure:
+The NotebookLM Ultra Exporter extension formats the CSV correctly by default. However, if you get an "Invalid CSV format" error, ensure your CSV has this structure:
 
 ```csv
 "Question","Answer"
@@ -103,7 +111,7 @@ The exported CSV format may vary. If the app shows an "Invalid CSV format" error
 - Fields enclosed in double quotes
 - Comma-separated
 
-### Step 4: Upload to the App
+### Step 5: Upload to the App
 
 1. Go to the app home page
 2. Drag and drop the CSV file
