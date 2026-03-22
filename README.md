@@ -85,13 +85,9 @@ Google NotebookLM doesn't export flashcards directly to CSV. Use the **NotebookL
 
 ### Step 3: Export Flashcards as CSV
 
-1. In your NotebookLM notebook, click the **Quiz** button or type:
-   ```
-   Generate a quiz with flashcards about [topic]
-   ```
-2. NotebookLM will create a set of flashcards
-3. Click the **NotebookLM Ultra Exporter** extension icon
-4. Select **Export to CSV** — it will generate a properly formatted CSV file and download it automatically
+1. In your NotebookLM notebook, click the **Flashcards** button to generate flashcards from your sources
+2. Click the **NotebookLM Ultra Exporter** extension icon
+3. Select **Export to CSV** — it will generate a properly formatted CSV file and download it automatically
 
 > **Note:** If you don't use the exporter extension, NotebookLM's built-in download may export as JSON or text format, which will need manual conversion to CSV.
 
