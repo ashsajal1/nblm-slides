@@ -402,7 +402,7 @@ export default function Home() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="flex gap-2 justify-center mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent py-2"
+                            className="flex gap-2 justify-start mb-6 overflow-x-auto scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent py-2 px-4"
                         >
                             {decks.map((d) => (
                                 <button
