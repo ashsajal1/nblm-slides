@@ -43,6 +43,7 @@
     "showAnswer": "Show Answer",
     "showQuestion": "Show Question",
     "keyboardHint": "Use ← → to change slides, Space to show answer",
+    "clickToFlip": "Click to flip",
     "uploadCsv": "Upload CSV",
     "invalidCsv": "Invalid CSV format. Expected columns: Question and Answer.",
     "invalidFile": "Please drop a valid .csv file.",

@@ -43,6 +43,7 @@
     "showAnswer": "回答を表示",
     "showQuestion": "質問を表示",
     "keyboardHint": "← → でスライド変更、Spaceで回答表示",
+    "clickToFlip": "クリックして反転",
     "uploadCsv": "CSVアップロード",
     "invalidCsv": "無効なCSV形式です。質問と回答の列が必要です。",
     "invalidFile": "有効な.csvファイルをドロップしてください。",

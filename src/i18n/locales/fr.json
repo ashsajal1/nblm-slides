@@ -43,6 +43,7 @@
     "showAnswer": "Afficher la réponse",
     "showQuestion": "Afficher la question",
     "keyboardHint": "Utilisez ← → pour changer de diapositive, Espace pour voir la réponse",
+    "clickToFlip": "Cliquez pour retourner",
     "uploadCsv": "Télécharger CSV",
     "invalidCsv": "Format CSV invalide. Colonnes Question et Réponse requises.",
     "invalidFile": "Veuillez déposer un fichier .csv valide.",

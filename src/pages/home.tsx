@@ -480,26 +480,21 @@ export default function Home() {
                                 />
                             </div>
 
-                            <div className="relative overflow-hidden rounded-2xl border bg-card shadow-lg min-h-[340px] flex items-center justify-center p-8">
-                                <AnimatePresence
-                                    initial={false}
-                                    custom={direction}
-                                    mode="wait"
+                            {/* Flip card container */}
+                            <div
+                                className="relative w-full h-[340px] perspective-1000 cursor-pointer"
+                                onClick={() => setShowAnswer(!showAnswer)}
+                            >
+                                <motion.div
+                                    key={`${activeDeckId}-${current}`}
+                                    className="relative w-full h-full preserve-3d transition-transform duration-500"
+                                    style={{
+                                        transformStyle: "preserve-3d",
+                                        transform: showAnswer ? "rotateY(180deg)" : "rotateY(0deg)",
+                                    }}
                                 >
-                                    <motion.div
-                                        key={`${activeDeckId}-${current}`}
-                                        custom={direction}
-                                        variants={slideVariants}
-                                        initial="enter"
-                                        animate="center"
-                                        exit="exit"
-                                        transition={{
-                                            type: "spring",
-                                            stiffness: 300,
-                                            damping: 30,
-                                        }}
-                                        className="w-full text-center space-y-8"
-                                    >
+                                    {/* Front - Question */}
+                                    <div className="absolute w-full h-full backface-hidden rounded-2xl border bg-card shadow-lg p-8 flex flex-col items-center justify-center">
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="flex items-center gap-2 text-primary">
                                                 <HelpCircle className="h-6 w-6" />
@@ -507,43 +502,38 @@ export default function Home() {
                                                     {t("home.question")}
                                                 </span>
                                             </div>
-                                            <h2 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
+                                            <h2 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed text-center">
                                                 {slides[current]?.question}
                                             </h2>
                                         </div>
+                                        <p className="text-sm text-muted-foreground mt-4">
+                                            {t("home.clickToFlip")}
+                                        </p>
+                                    </div>
 
-                                        {!showAnswer ? (
-                                            <Button
-                                                size="lg"
-                                                variant="outline"
-                                                onClick={() =>
-                                                    setShowAnswer(true)
-                                                }
-                                                className="text-base"
-                                            >
-                                                <Lightbulb className="mr-2 h-5 w-5" />
-                                                {t("home.showAnswer")}
-                                            </Button>
-                                        ) : (
-                                            <motion.div
-                                                initial={{ opacity: 0, scale: 0.9 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                transition={{ duration: 0.3 }}
-                                                className="bg-primary/10 border border-primary/20 rounded-xl p-6 mx-auto max-w-lg"
-                                            >
-                                                <div className="flex items-center justify-center gap-2 text-primary mb-2">
-                                                    <Lightbulb className="h-5 w-5" />
-                                                    <span className="text-sm font-semibold uppercase tracking-wider">
-                                                        {t("home.answer")}
-                                                    </span>
-                                                </div>
-                                                <p className="text-lg md:text-xl font-semibold text-foreground">
-                                                    {slides[current]?.answer}
-                                                </p>
-                                            </motion.div>
-                                        )}
-                                    </motion.div>
-                                </AnimatePresence>
+                                    {/* Back - Answer (flipped 180°) */}
+                                    <div
+                                        className="absolute w-full h-full backface-hidden rounded-2xl border bg-primary/10 shadow-lg p-8 flex flex-col items-center justify-center"
+                                        style={{
+                                            transform: "rotateY(180deg)",
+                                        }}
+                                    >
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className="flex items-center gap-2 text-primary">
+                                                <Lightbulb className="h-6 w-6" />
+                                                <span className="text-sm font-semibold uppercase tracking-wider">
+                                                    {t("home.answer")}
+                                                </span>
+                                            </div>
+                                            <p className="text-lg md:text-xl font-semibold text-foreground text-center">
+                                                {slides[current]?.answer}
+                                            </p>
+                                        </div>
+                                        <p className="text-sm text-muted-foreground mt-4">
+                                            {t("home.clickToFlip")}
+                                        </p>
+                                    </div>
+                                </motion.div>
                             </div>
 
                             {/* Navigation */}

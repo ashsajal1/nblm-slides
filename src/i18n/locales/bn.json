@@ -43,6 +43,7 @@
     "showAnswer": "উত্তর দেখুন",
     "showQuestion": "প্রশ্ন দেখুন",
     "keyboardHint": "← → দিয়ে স্লাইড পরিবর্তন, Space দিয়ে উত্তর দেখুন",
+    "clickToFlip": "উল্টাতে ক্লিক করুন",
     "uploadCsv": "CSV আপলোড করুন",
     "invalidCsv": "Invalid CSV format. Expected columns: প্রশ্ন (question) and উত্তর (answer).",
     "invalidFile": "Please drop a valid .csv file.",

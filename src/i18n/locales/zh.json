@@ -43,6 +43,7 @@
     "showAnswer": "显示答案",
     "showQuestion": "显示问题",
     "keyboardHint": "使用 ← → 切换幻灯片，Space显示答案",
+    "clickToFlip": "点击翻转",
     "uploadCsv": "上传CSV",
     "invalidCsv": "无效的CSV格式。需要问题列和答案列。",
     "invalidFile": "请拖放有效的.csv文件。",
