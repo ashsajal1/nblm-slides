@@ -58,10 +58,8 @@
     "delete": "Delete",
     "enableAutoSpeak": "Enable auto-speak",
     "disableAutoSpeak": "Disable auto-speak",
-    "startAutoSwipe": "Start auto-swipe",
-    "stopAutoSwipe": "Stop auto-swipe",
     "resetToStart": "Reset to start",
-    "speed": "Speed:"
+    "autoSwipeMode": "🎬 Auto-play: Question → Answer → Next Card"
   },
   "slides": {
     "title": "Slides",

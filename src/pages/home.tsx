@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Volume2, VolumeX, Play, Pause, RotateCcw } from "lucide-react";
+import { Volume2, VolumeX, RotateCcw } from "lucide-react";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import { FlashcardDeck, type DeckTopic, saveDeck, setActiveDeckId, getAllDecks } from "@/lib/db/indexedDB";
@@ -43,8 +43,9 @@ export default function Home() {
     const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [autoSpeak, setAutoSpeak] = useState(false);
-    const [autoSwipe, setAutoSwipe] = useState(false);
-    const [autoSwipeInterval, setAutoSwipeInterval] = useState<number>(5000); // 5 seconds per slide
+    const [playStep, setPlayStep] = useState<0 | 1 | 2 | 3>(0);
+    const questionCallbackCalled = useRef(false);
+    const answerCallbackCalled = useRef(false);
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
@@ -75,8 +76,12 @@ export default function Home() {
     }, []);
 
     // Speak text using speech synthesis
-    const speak = useCallback((text: string) => {
-        if (!text || !("speechSynthesis" in window)) return;
+    const speak = useCallback((text: string, type: 'question' | 'answer' = 'question', onEnd?: () => void) => {
+        if (!text || !("speechSynthesis" in window)) {
+            // If speech not available, call onEnd immediately
+            if (onEnd) onEnd();
+            return;
+        }
 
         // Cancel any ongoing speech
         window.speechSynthesis.cancel();
@@ -87,9 +92,17 @@ export default function Home() {
         utterance.pitch = 1;
         utterance.volume = 1;
 
-        utterance.onstart = () => setIsSpeaking(true);
-        utterance.onend = () => setIsSpeaking(false);
-        utterance.onerror = () => setIsSpeaking(false);
+        utterance.onstart = () => {
+            setIsSpeaking(true);
+        };
+        utterance.onend = () => {
+            setIsSpeaking(false);
+            if (onEnd) onEnd();
+        };
+        utterance.onerror = () => {
+            setIsSpeaking(false);
+            if (onEnd) onEnd();
+        };
 
         window.speechSynthesis.speak(utterance);
     }, [stripMathSyntax]);
@@ -112,56 +125,86 @@ export default function Home() {
         });
     }, [stopSpeaking]);
 
-    // Toggle auto-swipe
-    const toggleAutoSwipe = useCallback(() => {
-        setAutoSwipe((prev) => !prev);
-    }, []);
-
-    // Stop auto-swipe
-    const stopAutoSwipe = useCallback(() => {
-        setAutoSwipe(false);
-    }, []);
-
     // Reset to first slide
     const resetToStart = useCallback(() => {
-        stopAutoSwipe();
+        setAutoSpeak(false);
+        stopSpeaking();
         setCurrent(0);
         setShowAnswer(false);
-    }, [stopAutoSwipe, setCurrent, setShowAnswer]);
+        setPlayStep(0);
+    }, [stopSpeaking, setCurrent, setShowAnswer]);
 
-    // Auto-speak when answer is shown
+    // Auto-speak and auto-advance logic
     useEffect(() => {
-        if (autoSpeak && showAnswer && slides[current]) {
-            speak(slides[current].answer);
-        }
-    }, [autoSpeak, showAnswer, current, slides, speak]);
+        if (!autoSpeak || slides.length === 0 || !slides[current]) return;
 
-    // Auto-speak question when slide changes
-    useEffect(() => {
-        if (autoSpeak && slides[current]) {
-            speak(slides[current].question);
-        }
-    }, [autoSpeak, current, slides, speak]);
+        let timeoutId: NodeJS.Timeout;
+        let fallbackTimeoutId: NodeJS.Timeout;
+        const currentSlide = slides[current];
 
-    // Auto-swipe effect
-    useEffect(() => {
-        if (!autoSwipe || slides.length === 0) return;
-
-        const interval = setInterval(() => {
-            setCurrent((prev) => {
-                const next = prev + 1;
-                if (next >= slides.length) {
-                    // Reached the end - stop auto-swipe and reset
-                    setAutoSwipe(false);
-                    return 0;
+        // Step 0: Speak question
+        if (playStep === 0 && !showAnswer && !isSpeaking && currentSlide?.question) {
+            questionCallbackCalled.current = false;
+            speak(currentSlide.question, 'question', () => {
+                if (!questionCallbackCalled.current) {
+                    questionCallbackCalled.current = true;
+                    setPlayStep(1);
                 }
-                return next;
             });
-            setShowAnswer(false);
-        }, autoSwipeInterval);
+            // Fallback timeout in case speech callback doesn't fire
+            fallbackTimeoutId = setTimeout(() => {
+                if (!questionCallbackCalled.current) {
+                    questionCallbackCalled.current = true;
+                    setPlayStep(1);
+                }
+            }, 5000);
+        }
+        // Step 1: Show answer
+        else if (playStep === 1 && !showAnswer) {
+            setShowAnswer(true);
+            setPlayStep(2);
+        }
+        // Step 2: Speak answer
+        else if (playStep === 2 && showAnswer && !isSpeaking && currentSlide?.answer) {
+            answerCallbackCalled.current = false;
+            speak(currentSlide.answer, 'answer', () => {
+                if (!answerCallbackCalled.current) {
+                    answerCallbackCalled.current = true;
+                    setPlayStep(3);
+                }
+            });
+            // Fallback timeout in case speech callback doesn't fire
+            fallbackTimeoutId = setTimeout(() => {
+                if (!answerCallbackCalled.current) {
+                    answerCallbackCalled.current = true;
+                    setPlayStep(3);
+                }
+            }, 5000);
+        }
+        // Step 3: Advance to next slide
+        else if (playStep === 3 && showAnswer) {
+            timeoutId = setTimeout(() => {
+                setCurrent((prev) => {
+                    const next = prev + 1;
+                    if (next >= slides.length) {
+                        setAutoSpeak(false);
+                        return 0;
+                    }
+                    return next;
+                });
+                setShowAnswer(false);
+                setPlayStep(0);
+                // Reset callback flags for next card
+                questionCallbackCalled.current = false;
+                answerCallbackCalled.current = false;
+            }, 800);
+        }
 
-        return () => clearInterval(interval);
-    }, [autoSwipe, slides.length, autoSwipeInterval, setCurrent]);
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+            if (fallbackTimeoutId) clearTimeout(fallbackTimeoutId);
+        };
+    }, [autoSpeak, current, slides.length, showAnswer, playStep, isSpeaking, setCurrent, setShowAnswer, speak, slides]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -376,19 +419,6 @@ export default function Home() {
                                 <Button
                                     variant="outline"
                                     size="icon"
-                                    onClick={toggleAutoSwipe}
-                                    className={`h-10 w-10 rounded-full ${autoSwipe ? "bg-primary text-primary-foreground" : ""}`}
-                                    title={autoSwipe ? t("home.stopAutoSwipe") : t("home.startAutoSwipe")}
-                                >
-                                    {autoSwipe ? (
-                                        <Pause className="h-5 w-5" />
-                                    ) : (
-                                        <Play className="h-5 w-5" />
-                                    )}
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="icon"
                                     onClick={resetToStart}
                                     className="h-10 w-10 rounded-full"
                                     title={t("home.resetToStart")}
@@ -399,22 +429,11 @@ export default function Home() {
                         )}
                     </div>
 
-                    {autoSwipe && slides.length > 0 && (
-                        <div className="flex justify-center mb-4 gap-4 items-center">
-                            <span className="text-sm text-muted-foreground">{t("home.speed")}</span>
-                            <div className="flex gap-2">
-                                {[3000, 5000, 8000, 10000].map((speed) => (
-                                    <Button
-                                        key={speed}
-                                        variant={autoSwipeInterval === speed ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => setAutoSwipeInterval(speed)}
-                                        className="h-8 text-xs"
-                                    >
-                                        {speed / 1000}s
-                                    </Button>
-                                ))}
-                            </div>
+                    {autoSpeak && slides.length > 0 && (
+                        <div className="flex justify-center mb-4">
+                            <p className="text-sm text-muted-foreground">
+                                {t("home.autoSwipeMode")}
+                            </p>
                         </div>
                     )}
 

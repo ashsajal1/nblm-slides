@@ -58,10 +58,8 @@
     "delete": "Eliminar",
     "enableAutoSpeak": "Activar auto-voz",
     "disableAutoSpeak": "Desactivar auto-voz",
-    "startAutoSwipe": "Iniciar desplazamiento automático",
-    "stopAutoSwipe": "Detener desplazamiento automático",
     "resetToStart": "Reiniciar al inicio",
-    "speed": "Velocidad:"
+    "autoSwipeMode": "🎬 Auto-reproducción: Pregunta → Respuesta → Siguiente tarjeta"
   },
   "slides": {
     "title": "Diapositivas",

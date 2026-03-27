@@ -58,10 +58,8 @@
     "delete": "Supprimer",
     "enableAutoSpeak": "Activer la lecture automatique",
     "disableAutoSpeak": "Désactiver la lecture automatique",
-    "startAutoSwipe": "Démarrer le défilement auto",
-    "stopAutoSwipe": "Arrêter le défilement auto",
     "resetToStart": "Réinitialiser au début",
-    "speed": "Vitesse:"
+    "autoSwipeMode": "🎬 Lecture auto : Question → Réponse → Carte suivante"
   },
   "slides": {
     "title": "Diapositives",

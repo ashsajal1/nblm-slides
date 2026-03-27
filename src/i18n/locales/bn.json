@@ -58,10 +58,8 @@
     "delete": "মুছে ফেলুন",
     "enableAutoSpeak": "অটো-স্পিক সক্ষম করুন",
     "disableAutoSpeak": "অটো-স্পিক নিষ্ক্রিয় করুন",
-    "startAutoSwipe": "অটো-সোয়াইপ শুরু করুন",
-    "stopAutoSwipe": "অটো-সোয়াইপ বন্ধ করুন",
     "resetToStart": "শুরুতে রিসেট করুন",
-    "speed": "গতি:"
+    "autoSwipeMode": "🎬 অটো-প্লে: প্রশ্ন → উত্তর → পরবর্তী কার্ড"
   },
   "slides": {
     "title": "স্লাইডস",
