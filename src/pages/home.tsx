@@ -46,6 +46,23 @@ export default function Home() {
     const [playStep, setPlayStep] = useState<0 | 1 | 2 | 3>(0);
     const questionCallbackCalled = useRef(false);
     const answerCallbackCalled = useRef(false);
+    const selectedVoice = useRef<SpeechSynthesisVoice | null>(null);
+
+    // Load selected voice from localStorage
+    useEffect(() => {
+        const loadVoice = () => {
+            const voices = window.speechSynthesis.getVoices();
+            const savedVoiceName = localStorage.getItem('selectedVoice');
+            if (savedVoiceName) {
+                selectedVoice.current = voices.find((v) => v.name === savedVoiceName) || null;
+            }
+        };
+
+        loadVoice();
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = loadVoice;
+        }
+    }, []);
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
@@ -91,6 +108,11 @@ export default function Home() {
         utterance.rate = 1;
         utterance.pitch = 1;
         utterance.volume = 1;
+        
+        // Use selected voice
+        if (selectedVoice.current) {
+            utterance.voice = selectedVoice.current;
+        }
 
         utterance.onstart = () => {
             setIsSpeaking(true);

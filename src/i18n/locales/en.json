@@ -330,6 +330,8 @@
     "start": "Get Started",
     "contactBtn": "Contact Us",
     "language": "Language",
-    "selectLanguage": "Select Language"
+    "selectLanguage": "Select Language",
+    "selectVoice": "Select Voice",
+    "defaultVoice": "Default"
   }
 }
