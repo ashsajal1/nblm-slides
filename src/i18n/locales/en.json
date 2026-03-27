@@ -55,7 +55,9 @@
     "save": "Save",
     "deleteDeck": "Delete Deck",
     "deleteDeckConfirm": "This deck will be permanently deleted. It cannot be recovered.",
-    "delete": "Delete"
+    "delete": "Delete",
+    "enableAutoSpeak": "Enable auto-speak",
+    "disableAutoSpeak": "Disable auto-speak"
   },
   "slides": {
     "title": "Slides",

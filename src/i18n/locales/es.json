@@ -55,7 +55,9 @@
     "save": "Guardar",
     "deleteDeck": "Eliminar mazo",
     "deleteDeckConfirm": "Este mazo se eliminará permanentemente. No se puede recuperar.",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "enableAutoSpeak": "Activar auto-voz",
+    "disableAutoSpeak": "Desactivar auto-voz"
   },
   "slides": {
     "title": "Diapositivas",

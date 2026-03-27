@@ -55,7 +55,9 @@
     "save": "Enregistrer",
     "deleteDeck": "Supprimer le paquet",
     "deleteDeckConfirm": "Ce paquet sera définitivement supprimé. Il ne peut pas être récupéré.",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "enableAutoSpeak": "Activer la lecture automatique",
+    "disableAutoSpeak": "Désactiver la lecture automatique"
   },
   "slides": {
     "title": "Diapositives",

@@ -55,7 +55,9 @@
     "save": "保存",
     "deleteDeck": "デッキを削除",
     "deleteDeckConfirm": "このデッキは完全に削除されます。復元できません。",
-    "delete": "削除"
+    "delete": "削除",
+    "enableAutoSpeak": "自動読み上げを有効にする",
+    "disableAutoSpeak": "自動読み上げを無効にする"
   },
   "slides": {
     "title": "スライド",

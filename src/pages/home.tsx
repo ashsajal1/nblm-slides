@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Volume2, VolumeX } from "lucide-react";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import { FlashcardDeck, type DeckTopic, saveDeck, setActiveDeckId, getAllDecks } from "@/lib/db/indexedDB";
@@ -18,6 +19,7 @@ import { SlideNavigator } from "@/components/partials/SlideNavigator";
 import { EmptyState } from "@/components/partials/EmptyState";
 import { DeckSetupDialog } from "@/components/partials/DeckSetupDialog";
 import { DeleteConfirmationDialog } from "@/components/partials/DeleteConfirmationDialog";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
     const { t } = useTranslation();
@@ -39,6 +41,8 @@ export default function Home() {
     const [setupTitle, setSetupTitle] = useState("");
     const [setupTopic, setSetupTopic] = useState<DeckTopic>("study");
     const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [autoSpeak, setAutoSpeak] = useState(false);
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
@@ -54,6 +58,80 @@ export default function Home() {
         paginateVertical,
         reset,
     } = useSlides(slides.length);
+
+    // Strip KaTeX syntax from text for speech
+    const stripMathSyntax = useCallback((text: string): string => {
+        if (!text) return "";
+        return text
+            .replace(/\$\$(.+?)\$\$/g, "$1")
+            .replace(/\\\[([\s\S]*?)\\\]/g, "$1")
+            .replace(/\$(.+?)\$/g, "$1")
+            .replace(/\\\((.+?)\\\)/g, "$1")
+            .replace(/\\frac{([^}]+)}{([^}]+)}/g, "$1 divided by $2")
+            .replace(/\\sqrt{([^}]+)}/g, "square root of $1")
+            .replace(/\^/g, " to the power of ");
+    }, []);
+
+    // Speak text using speech synthesis
+    const speak = useCallback((text: string) => {
+        if (!text || !("speechSynthesis" in window)) return;
+
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const cleanText = stripMathSyntax(text);
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        utterance.onstart = () => setIsSpeaking(true);
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
+
+        window.speechSynthesis.speak(utterance);
+    }, [stripMathSyntax]);
+
+    // Stop speaking
+    const stopSpeaking = useCallback(() => {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        setIsSpeaking(false);
+    }, []);
+
+    // Toggle auto-speak
+    const toggleAutoSpeak = useCallback(() => {
+        setAutoSpeak((prev) => {
+            const newValue = !prev;
+            if (!newValue) {
+                stopSpeaking();
+            }
+            return newValue;
+        });
+    }, [stopSpeaking]);
+
+    // Auto-speak when answer is shown
+    useEffect(() => {
+        if (autoSpeak && showAnswer && slides[current]) {
+            speak(slides[current].answer);
+        }
+    }, [autoSpeak, showAnswer, current, slides, speak]);
+
+    // Auto-speak question when slide changes
+    useEffect(() => {
+        if (autoSpeak && slides[current]) {
+            speak(slides[current].question);
+        }
+    }, [autoSpeak, current, slides, speak]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if ("speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+            }
+        };
+    }, []);
 
     const handleFileUpload = useCallback(
         (file: File) => {
@@ -237,8 +315,25 @@ export default function Home() {
                         />
                     )}
 
-                    <div className="flex justify-center mb-6">
+                    <div className="flex justify-center mb-6 gap-4">
                         <UploadButton onFilesSelected={handleMultipleFileUpload} />
+                        {slides.length > 0 && (
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={toggleAutoSpeak}
+                                className={`h-10 w-10 rounded-full ${autoSpeak ? "bg-primary text-primary-foreground" : ""}`}
+                                title={autoSpeak ? t("home.disableAutoSpeak") : t("home.enableAutoSpeak")}
+                            >
+                                {isSpeaking ? (
+                                    <Volume2 className="h-5 w-5 animate-pulse" />
+                                ) : autoSpeak ? (
+                                    <Volume2 className="h-5 w-5" />
+                                ) : (
+                                    <VolumeX className="h-5 w-5" />
+                                )}
+                            </Button>
+                        )}
                     </div>
 
                     <AnimatePresence>
