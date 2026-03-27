@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { InlineMath, BlockMath } from "react-katex";
+import "katex/dist/katex.min.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -52,6 +54,51 @@ import {
     PlusCircle,
     Filter,
 } from "lucide-react";
+
+function renderMathInText(text: string): React.ReactNode {
+    if (!text) return null;
+
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let key = 0;
+
+    // Combined regex to match block math ($$...$$ or \[...\]), inline math ($...$ or \(...\))
+    const mathRegex = /\$\$(.+?)\$\$|\\\[([\s\S]*?)\\\]|\$(.+?)\$|\\\((.+?)\\\)/g;
+    let match;
+
+    while ((match = mathRegex.exec(text)) !== null) {
+        // Add text before the math
+        if (match.index > lastIndex) {
+            parts.push(text.slice(lastIndex, match.index));
+        }
+
+        // Determine which type of math and add accordingly
+        if (match[1] !== undefined || match[2] !== undefined) {
+            // Block math: $$...$$ or \[...\]
+            const mathExpression = match[1] || match[2];
+            parts.push(
+                <div key={key++} className="my-2">
+                    <BlockMath math={mathExpression} />
+                </div>
+            );
+        } else {
+            // Inline math: $...$ or \(...\)
+            const mathExpression = match[3] || match[4];
+            parts.push(
+                <InlineMath key={key++} math={mathExpression} />
+            );
+        }
+
+        lastIndex = match.index + match[0].length;
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+        parts.push(text.slice(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
+}
 
 export default function SlidesPage() {
     const { t } = useTranslation();
@@ -437,10 +484,10 @@ export default function SlidesPage() {
                                                 <tr key={i} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
                                                     <td className="px-4 py-3 text-muted-foreground">{i + 1}</td>
                                                     <td className="px-4 py-3 text-foreground font-medium">
-                                                        {slide.question}
+                                                        {renderMathInText(slide.question)}
                                                     </td>
                                                     <td className="px-4 py-3 text-muted-foreground">
-                                                        {slide.answer}
+                                                        {renderMathInText(slide.answer)}
                                                     </td>
                                                     <td className="px-4 py-3">
                                                         <div className="flex justify-end gap-1">
@@ -482,7 +529,7 @@ export default function SlidesPage() {
                                             >
                                                 <div className="flex flex-col items-center gap-3">
                                                     <h3 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
-                                                        {slides[current]?.question}
+                                                        {renderMathInText(slides[current]?.question)}
                                                     </h3>
                                                 </div>
                                                 <button
@@ -498,7 +545,7 @@ export default function SlidesPage() {
                                                         className="bg-primary/10 border border-primary/20 rounded-xl p-4"
                                                     >
                                                         <p className="text-lg font-semibold text-foreground">
-                                                            {slides[current]?.answer}
+                                                            {renderMathInText(slides[current]?.answer)}
                                                         </p>
                                                     </motion.div>
                                                 )}

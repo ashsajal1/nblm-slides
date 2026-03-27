@@ -1,11 +1,59 @@
 import { useTranslation } from "react-i18next";
 import { HelpCircle, Lightbulb } from "lucide-react";
+import { InlineMath, BlockMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 interface FlashCardProps {
     question: string;
     answer: string;
     showAnswer: boolean;
     onFlip: () => void;
+}
+
+function renderMathInText(text: string): React.ReactNode {
+    if (!text) return null;
+
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let key = 0;
+
+    // Combined regex to match block math ($$...$$ or \[...\]), inline math ($...$ or \(...\)), or display math ($...$ with trailing space)
+    // Order matters: check block math first, then inline
+    const mathRegex = /\$\$(.+?)\$\$|\\\[([\s\S]*?)\\\]|\$(.+?)\$|\\\((.+?)\\\)/g;
+    let match;
+
+    while ((match = mathRegex.exec(text)) !== null) {
+        // Add text before the math
+        if (match.index > lastIndex) {
+            parts.push(text.slice(lastIndex, match.index));
+        }
+
+        // Determine which type of math and add accordingly
+        if (match[1] !== undefined || match[2] !== undefined) {
+            // Block math: $$...$$ or \[...\]
+            const mathExpression = match[1] || match[2];
+            parts.push(
+                <div key={key++} className="my-2">
+                    <BlockMath math={mathExpression} />
+                </div>
+            );
+        } else {
+            // Inline math: $...$ or \(...\)
+            const mathExpression = match[3] || match[4];
+            parts.push(
+                <InlineMath key={key++} math={mathExpression} />
+            );
+        }
+
+        lastIndex = match.index + match[0].length;
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+        parts.push(text.slice(lastIndex));
+    }
+
+    return parts.length > 0 ? parts : text;
 }
 
 export function FlashCard({ question, answer, showAnswer, onFlip }: FlashCardProps) {
@@ -31,7 +79,7 @@ export function FlashCard({ question, answer, showAnswer, onFlip }: FlashCardPro
                             </span>
                         </div>
                         <h2 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed text-center">
-                            {question}
+                            {renderMathInText(question)}
                         </h2>
                     </div>
                     <p className="text-sm text-muted-foreground mt-4">
@@ -54,7 +102,7 @@ export function FlashCard({ question, answer, showAnswer, onFlip }: FlashCardPro
                             </span>
                         </div>
                         <p className="text-lg md:text-xl font-semibold text-foreground text-center">
-                            {answer}
+                            {renderMathInText(answer)}
                         </p>
                     </div>
                     <p className="text-sm text-muted-foreground mt-4">
