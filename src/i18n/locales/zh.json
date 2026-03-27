@@ -57,7 +57,11 @@
     "deleteDeckConfirm": "此卡组将被永久删除，无法恢复。",
     "delete": "删除",
     "enableAutoSpeak": "启用自动朗读",
-    "disableAutoSpeak": "禁用自动朗读"
+    "disableAutoSpeak": "禁用自动朗读",
+    "startAutoSwipe": "开始自动滑动",
+    "stopAutoSwipe": "停止自动滑动",
+    "resetToStart": "重置到开始",
+    "speed": "速度:"
   },
   "slides": {
     "title": "幻灯片",

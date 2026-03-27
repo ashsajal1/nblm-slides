@@ -57,7 +57,11 @@
     "deleteDeckConfirm": "Ce paquet sera définitivement supprimé. Il ne peut pas être récupéré.",
     "delete": "Supprimer",
     "enableAutoSpeak": "Activer la lecture automatique",
-    "disableAutoSpeak": "Désactiver la lecture automatique"
+    "disableAutoSpeak": "Désactiver la lecture automatique",
+    "startAutoSwipe": "Démarrer le défilement auto",
+    "stopAutoSwipe": "Arrêter le défilement auto",
+    "resetToStart": "Réinitialiser au début",
+    "speed": "Vitesse:"
   },
   "slides": {
     "title": "Diapositives",

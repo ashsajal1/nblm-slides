@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX, Play, Pause, RotateCcw } from "lucide-react";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import { FlashcardDeck, type DeckTopic, saveDeck, setActiveDeckId, getAllDecks } from "@/lib/db/indexedDB";
@@ -43,6 +43,8 @@ export default function Home() {
     const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [autoSpeak, setAutoSpeak] = useState(false);
+    const [autoSwipe, setAutoSwipe] = useState(false);
+    const [autoSwipeInterval, setAutoSwipeInterval] = useState<number>(5000); // 5 seconds per slide
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
@@ -110,6 +112,23 @@ export default function Home() {
         });
     }, [stopSpeaking]);
 
+    // Toggle auto-swipe
+    const toggleAutoSwipe = useCallback(() => {
+        setAutoSwipe((prev) => !prev);
+    }, []);
+
+    // Stop auto-swipe
+    const stopAutoSwipe = useCallback(() => {
+        setAutoSwipe(false);
+    }, []);
+
+    // Reset to first slide
+    const resetToStart = useCallback(() => {
+        stopAutoSwipe();
+        setCurrent(0);
+        setShowAnswer(false);
+    }, [stopAutoSwipe, setCurrent, setShowAnswer]);
+
     // Auto-speak when answer is shown
     useEffect(() => {
         if (autoSpeak && showAnswer && slides[current]) {
@@ -123,6 +142,26 @@ export default function Home() {
             speak(slides[current].question);
         }
     }, [autoSpeak, current, slides, speak]);
+
+    // Auto-swipe effect
+    useEffect(() => {
+        if (!autoSwipe || slides.length === 0) return;
+
+        const interval = setInterval(() => {
+            setCurrent((prev) => {
+                const next = prev + 1;
+                if (next >= slides.length) {
+                    // Reached the end - stop auto-swipe and reset
+                    setAutoSwipe(false);
+                    return 0;
+                }
+                return next;
+            });
+            setShowAnswer(false);
+        }, autoSwipeInterval);
+
+        return () => clearInterval(interval);
+    }, [autoSwipe, slides.length, autoSwipeInterval, setCurrent]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -318,23 +357,66 @@ export default function Home() {
                     <div className="flex justify-center mb-6 gap-4">
                         <UploadButton onFilesSelected={handleMultipleFileUpload} />
                         {slides.length > 0 && (
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                onClick={toggleAutoSpeak}
-                                className={`h-10 w-10 rounded-full ${autoSpeak ? "bg-primary text-primary-foreground" : ""}`}
-                                title={autoSpeak ? t("home.disableAutoSpeak") : t("home.enableAutoSpeak")}
-                            >
-                                {isSpeaking ? (
-                                    <Volume2 className="h-5 w-5 animate-pulse" />
-                                ) : autoSpeak ? (
-                                    <Volume2 className="h-5 w-5" />
-                                ) : (
-                                    <VolumeX className="h-5 w-5" />
-                                )}
-                            </Button>
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={toggleAutoSpeak}
+                                    className={`h-10 w-10 rounded-full ${autoSpeak ? "bg-primary text-primary-foreground" : ""}`}
+                                    title={autoSpeak ? t("home.disableAutoSpeak") : t("home.enableAutoSpeak")}
+                                >
+                                    {isSpeaking ? (
+                                        <Volume2 className="h-5 w-5 animate-pulse" />
+                                    ) : autoSpeak ? (
+                                        <Volume2 className="h-5 w-5" />
+                                    ) : (
+                                        <VolumeX className="h-5 w-5" />
+                                    )}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={toggleAutoSwipe}
+                                    className={`h-10 w-10 rounded-full ${autoSwipe ? "bg-primary text-primary-foreground" : ""}`}
+                                    title={autoSwipe ? t("home.stopAutoSwipe") : t("home.startAutoSwipe")}
+                                >
+                                    {autoSwipe ? (
+                                        <Pause className="h-5 w-5" />
+                                    ) : (
+                                        <Play className="h-5 w-5" />
+                                    )}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={resetToStart}
+                                    className="h-10 w-10 rounded-full"
+                                    title={t("home.resetToStart")}
+                                >
+                                    <RotateCcw className="h-5 w-5" />
+                                </Button>
+                            </>
                         )}
                     </div>
+
+                    {autoSwipe && slides.length > 0 && (
+                        <div className="flex justify-center mb-4 gap-4 items-center">
+                            <span className="text-sm text-muted-foreground">{t("home.speed")}</span>
+                            <div className="flex gap-2">
+                                {[3000, 5000, 8000, 10000].map((speed) => (
+                                    <Button
+                                        key={speed}
+                                        variant={autoSwipeInterval === speed ? "default" : "outline"}
+                                        size="sm"
+                                        onClick={() => setAutoSwipeInterval(speed)}
+                                        className="h-8 text-xs"
+                                    >
+                                        {speed / 1000}s
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     <AnimatePresence>
                         {uploadError && (

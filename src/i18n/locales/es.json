@@ -57,7 +57,11 @@
     "deleteDeckConfirm": "Este mazo se eliminará permanentemente. No se puede recuperar.",
     "delete": "Eliminar",
     "enableAutoSpeak": "Activar auto-voz",
-    "disableAutoSpeak": "Desactivar auto-voz"
+    "disableAutoSpeak": "Desactivar auto-voz",
+    "startAutoSwipe": "Iniciar desplazamiento automático",
+    "stopAutoSwipe": "Detener desplazamiento automático",
+    "resetToStart": "Reiniciar al inicio",
+    "speed": "Velocidad:"
   },
   "slides": {
     "title": "Diapositivas",

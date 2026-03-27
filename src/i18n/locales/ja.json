@@ -57,7 +57,11 @@
     "deleteDeckConfirm": "このデッキは完全に削除されます。復元できません。",
     "delete": "削除",
     "enableAutoSpeak": "自動読み上げを有効にする",
-    "disableAutoSpeak": "自動読み上げを無効にする"
+    "disableAutoSpeak": "自動読み上げを無効にする",
+    "startAutoSwipe": "自動スワイプを開始",
+    "stopAutoSwipe": "自動スワイプを停止",
+    "resetToStart": "最初にリセット",
+    "speed": "速度:"
   },
   "slides": {
     "title": "スライド",

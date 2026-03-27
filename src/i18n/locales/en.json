@@ -57,7 +57,11 @@
     "deleteDeckConfirm": "This deck will be permanently deleted. It cannot be recovered.",
     "delete": "Delete",
     "enableAutoSpeak": "Enable auto-speak",
-    "disableAutoSpeak": "Disable auto-speak"
+    "disableAutoSpeak": "Disable auto-speak",
+    "startAutoSwipe": "Start auto-swipe",
+    "stopAutoSwipe": "Stop auto-swipe",
+    "resetToStart": "Reset to start",
+    "speed": "Speed:"
   },
   "slides": {
     "title": "Slides",
