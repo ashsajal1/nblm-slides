@@ -64,17 +64,125 @@ export default function Home() {
         reset,
     } = useSlides(slides.length);
 
-    // Strip KaTeX syntax from text for speech
+    // Strip KaTeX syntax from text for speech and convert to speech-friendly format
     const stripMathSyntax = useCallback((text: string): string => {
         if (!text) return "";
-        return text
-            .replace(/\$\$(.+?)\$\$/g, "$1")
-            .replace(/\\\[([\s\S]*?)\\\]/g, "$1")
-            .replace(/\$(.+?)\$/g, "$1")
-            .replace(/\\\((.+?)\\\)/g, "$1")
-            .replace(/\\frac{([^}]+)}{([^}]+)}/g, "$1 divided by $2")
-            .replace(/\\sqrt{([^}]+)}/g, "square root of $1")
-            .replace(/\^/g, " to the power of ");
+        
+        let result = text;
+
+        // Remove block math delimiters: $$...$$ or \[...\]
+        result = result.replace(/\$\$([\s\S]*?)\$\$/g, "$1");
+        result = result.replace(/\\\[([\s\S]*?)\\\]/g, "$1");
+        
+        // Remove inline math delimiters: $...$ or \(...\)
+        result = result.replace(/\$([^$]+?)\$/g, "$1");
+        result = result.replace(/\\\((.+?)\\\)/g, "$1");
+        
+        // Greek letters (lowercase)
+        const greekLetters: Record<string, string> = {
+            '\\alpha': 'alpha ', '\\beta': 'beta ', '\\gamma': 'gamma ',
+            '\\delta': 'delta ', '\\epsilon': 'epsilon ', '\\varepsilon': 'epsilon ',
+            '\\zeta': 'zeta ', '\\eta': 'eta ', '\\theta': 'theta ',
+            '\\vartheta': 'theta ', '\\iota': 'iota ', '\\kappa': 'kappa ',
+            '\\lambda': 'lambda ', '\\mu': 'mu ', '\\nu': 'nu ',
+            '\\xi': 'xi ', '\\pi': 'pi ', '\\varpi': 'pi ',
+            '\\rho': 'rho ', '\\varrho': 'rho ', '\\sigma': 'sigma ',
+            '\\varsigma': 'sigma ', '\\tau': 'tau ', '\\upsilon': 'upsilon ',
+            '\\phi': 'phi ', '\\varphi': 'phi ', '\\chi': 'chi ',
+            '\\psi': 'psi ', '\\omega': 'omega ',
+        };
+        Object.entries(greekLetters).forEach(([latex, name]) => {
+            result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
+        });
+
+        // Greek letters (uppercase)
+        const greekLettersUppercase: Record<string, string> = {
+            '\\Delta': 'Delta ', '\\Theta': 'Theta ', '\\Lambda': 'Lambda ',
+            '\\Xi': 'Xi ', '\\Pi': 'Pi ', '\\Sigma': 'Sigma ',
+            '\\Upsilon': 'Upsilon ', '\\Phi': 'Phi ', '\\Psi': 'Psi ',
+            '\\Omega': 'Omega ', '\\Gamma': 'Gamma ',
+        };
+        Object.entries(greekLettersUppercase).forEach(([latex, name]) => {
+            result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
+        });
+
+        // Operators and symbols
+        const symbols: Record<string, string> = {
+            '+': ' plus ', '-': ' minus ', '=': ' equals ',
+            '≠': ' not equals ', '\\neq': ' not equals ',
+            '<': ' less than ', '>': ' greater than ',
+            '≤': ' less than or equal to ', '\\leq': ' less than or equal to ',
+            '≥': ' greater than or equal to ', '\\geq': ' greater than or equal to ',
+            '×': ' times ', '\\times': ' times ',
+            '÷': ' divided by ', '\\div': ' divided by ',
+            '·': ' dot ', '\\cdot': ' dot ',
+            '*': ' times ', '/': ' divided by ',
+            '^': ' to the power of ',
+            '\\sqrt': ' square root of ', '√': ' square root of ',
+            '\\infty': ' infinity ', '∞': ' infinity ',
+            '\\int': ' integral ', '\\oint': ' contour integral ',
+            '\\sum': ' sum ', '\\prod': ' product ',
+            '\\lim': ' limit ', '\\log': ' log ', '\\ln': ' natural log ',
+            '\\sin': ' sine ', '\\cos': ' cosine ', '\\tan': ' tangent ',
+            '\\csc': ' cosecant ', '\\sec': ' secant ', '\\cot': ' cotangent ',
+            '\\arcsin': ' arc sine ', '\\arccos': ' arc cosine ', '\\arctan': ' arc tangent ',
+            '\\sinh': ' hyperbolic sine ', '\\cosh': ' hyperbolic cosine ', '\\tanh': ' hyperbolic tangent ',
+            '\\frac': ' fraction ', '\\dfrac': ' fraction ',
+            '\\pm': ' plus or minus ', '\\mp': ' minus or plus ',
+            '\\approx': ' approximately ', '≈': ' approximately ',
+            '\\equiv': ' equivalent to ', '≡': ' equivalent to ',
+            '\\ne': ' not equal to ',
+            '\\in': ' in ', '\\ni': ' contains ',
+            '\\notin': ' not in ', '\\subset': ' subset of ',
+            '\\supset': ' superset of ', '\\subseteq': ' subset of or equal to ',
+            '\\supseteq': ' superset of or equal to ',
+            '\\cup': ' union ', '\\cap': ' intersection ',
+            '\\emptyset': ' empty set ', '∅': ' empty set ',
+            '\\forall': ' for all ', '\\exists': ' there exists ',
+            '\\nexists': ' there does not exist ',
+            '\\therefore': ' therefore ', '\\because': ' because ',
+            '\\prime': ' prime ', '\\degree': ' degrees ', '^\\circ': ' degrees ',
+            '\\angle': ' angle ', '\\triangle': ' triangle ',
+            '\\perp': ' perpendicular to ', '⊥': ' perpendicular to ',
+            '\\parallel': ' parallel to ', '∥': ' parallel to ',
+            '\\neg': ' not ', '\\land': ' and ', '\\lor': ' or ',
+            '\\implies': ' implies ', '\\Rightarrow': ' implies ',
+            '\\rightarrow': ' approaches ', '\\to': ' approaches ', '→': ' approaches ',
+            '\\mapsto': ' maps to ', '\\leftarrow': ' left arrow ',
+            '\\hat': ' hat ', '\\vec': ' vector ', '\\bar': ' bar ',
+            '\\dot': ' dot ', '\\ddot': ' double dot ',
+            '\\textbf': '', '\\textit': '', '\\mathrm': '', '\\mathbf': '',
+            '\\mathit': '', '\\mathcal': '', '\\mathbb': '', '\\mathfrak': '',
+            '\\text': '', '\\partial': ' partial ', '\\nabla': ' del ',
+            '\\hbar': ' h bar ', '\\ell': ' ell ',
+            '\\Re': ' real part ', '\\Im': ' imaginary part ',
+            '\\aleph': ' aleph ',
+            '(': ' ', ')': ' ', '[': ' ', ']': ' ',
+            '\\left': '', '\\right': '',
+        };
+        Object.entries(symbols).forEach(([latex, speech]) => {
+            result = result.replace(new RegExp(latex.replace(/[{}[\]\\^$|?*+()]/g, '\\$&'), 'g'), speech);
+        });
+
+        // Handle fractions: \frac{a}{b}
+        result = result.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1 over $2");
+        result = result.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, "$1 over $2");
+
+        // Handle subscripts: x_{n} or x_n
+        result = result.replace(/_?\{?([a-zA-Z0-9]+)\}?_\{?([a-zA-Z0-9]+)\}?/g, "$1 subscript $2");
+
+        // Handle superscripts: x^{n} or x^n
+        result = result.replace(/\{?([a-zA-Z0-9]+)\}?(\^|\*\*)\{?([a-zA-Z0-9]+)\}?/g, (_, base, __, sup) => {
+            const powerName = sup === '2' ? 'squared' : sup === '3' ? 'cubed' : `power ${sup}`;
+            return `${base} to the ${powerName}`;
+        });
+
+        // Remove remaining backslashes and braces
+        result = result.replace(/\\/g, ' ');
+        result = result.replace(/[{}]/g, '');
+
+        // Clean up extra whitespace
+        return result.replace(/\s+/g, ' ').trim();
     }, []);
 
     // Speak text using speech synthesis

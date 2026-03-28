@@ -54,6 +54,8 @@ import {
     Tag,
     PlusCircle,
     Filter,
+    Volume2,
+    VolumeX,
 } from "lucide-react";
 
 function renderMathInText(text: string): React.ReactNode {
@@ -130,6 +132,171 @@ export default function SlidesPage() {
     const [showAddSlideDialog, setShowAddSlideDialog] = useState(false);
     const [addQuestion, setAddQuestion] = useState("");
     const [addAnswer, setAddAnswer] = useState("");
+
+    const [speakingSlide, setSpeakingSlide] = useState<number | null>(null);
+    const [speakingPart, setSpeakingPart] = useState<"question" | "answer" | null>(null);
+
+    // Strip KaTeX syntax from text for speech and convert to speech-friendly format
+    const stripMathSyntax = useCallback((text: string): string => {
+        if (!text) return "";
+        
+        let result = text;
+
+        // Remove block math delimiters: $$...$$ or \[...\]
+        result = result.replace(/\$\$([\s\S]*?)\$\$/g, "$1");
+        result = result.replace(/\\\[([\s\S]*?)\\\]/g, "$1");
+        
+        // Remove inline math delimiters: $...$ or \(...\)
+        result = result.replace(/\$([^$]+?)\$/g, "$1");
+        result = result.replace(/\\\((.+?)\\\)/g, "$1");
+        
+        // Greek letters (lowercase)
+        const greekLetters: Record<string, string> = {
+            '\\alpha': 'alpha ', '\\beta': 'beta ', '\\gamma': 'gamma ',
+            '\\delta': 'delta ', '\\epsilon': 'epsilon ', '\\varepsilon': 'epsilon ',
+            '\\zeta': 'zeta ', '\\eta': 'eta ', '\\theta': 'theta ',
+            '\\vartheta': 'theta ', '\\iota': 'iota ', '\\kappa': 'kappa ',
+            '\\lambda': 'lambda ', '\\mu': 'mu ', '\\nu': 'nu ',
+            '\\xi': 'xi ', '\\pi': 'pi ', '\\varpi': 'pi ',
+            '\\rho': 'rho ', '\\varrho': 'rho ', '\\sigma': 'sigma ',
+            '\\varsigma': 'sigma ', '\\tau': 'tau ', '\\upsilon': 'upsilon ',
+            '\\phi': 'phi ', '\\varphi': 'phi ', '\\chi': 'chi ',
+            '\\psi': 'psi ', '\\omega': 'omega ',
+        };
+        Object.entries(greekLetters).forEach(([latex, name]) => {
+            result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
+        });
+
+        // Greek letters (uppercase)
+        const greekLettersUppercase: Record<string, string> = {
+            '\\Delta': 'Delta ', '\\Theta': 'Theta ', '\\Lambda': 'Lambda ',
+            '\\Xi': 'Xi ', '\\Pi': 'Pi ', '\\Sigma': 'Sigma ',
+            '\\Upsilon': 'Upsilon ', '\\Phi': 'Phi ', '\\Psi': 'Psi ',
+            '\\Omega': 'Omega ', '\\Gamma': 'Gamma ',
+        };
+        Object.entries(greekLettersUppercase).forEach(([latex, name]) => {
+            result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
+        });
+
+        // Operators and symbols
+        const symbols: Record<string, string> = {
+            '+': ' plus ', '-': ' minus ', '=': ' equals ',
+            '≠': ' not equals ', '\\neq': ' not equals ',
+            '<': ' less than ', '>': ' greater than ',
+            '≤': ' less than or equal to ', '\\leq': ' less than or equal to ',
+            '≥': ' greater than or equal to ', '\\geq': ' greater than or equal to ',
+            '×': ' times ', '\\times': ' times ',
+            '÷': ' divided by ', '\\div': ' divided by ',
+            '·': ' dot ', '\\cdot': ' dot ',
+            '*': ' times ', '/': ' divided by ',
+            '^': ' to the power of ',
+            '\\sqrt': ' square root of ', '√': ' square root of ',
+            '\\infty': ' infinity ', '∞': ' infinity ',
+            '\\int': ' integral ', '\\oint': ' contour integral ',
+            '\\sum': ' sum ', '\\prod': ' product ',
+            '\\lim': ' limit ', '\\log': ' log ', '\\ln': ' natural log ',
+            '\\sin': ' sine ', '\\cos': ' cosine ', '\\tan': ' tangent ',
+            '\\csc': ' cosecant ', '\\sec': ' secant ', '\\cot': ' cotangent ',
+            '\\arcsin': ' arc sine ', '\\arccos': ' arc cosine ', '\\arctan': ' arc tangent ',
+            '\\sinh': ' hyperbolic sine ', '\\cosh': ' hyperbolic cosine ', '\\tanh': ' hyperbolic tangent ',
+            '\\frac': ' fraction ', '\\dfrac': ' fraction ',
+            '\\pm': ' plus or minus ', '\\mp': ' minus or plus ',
+            '\\approx': ' approximately ', '≈': ' approximately ',
+            '\\equiv': ' equivalent to ', '≡': ' equivalent to ',
+            '\\ne': ' not equal to ',
+            '\\in': ' in ', '\\ni': ' contains ',
+            '\\notin': ' not in ', '\\subset': ' subset of ',
+            '\\supset': ' superset of ', '\\subseteq': ' subset of or equal to ',
+            '\\supseteq': ' superset of or equal to ',
+            '\\cup': ' union ', '\\cap': ' intersection ',
+            '\\emptyset': ' empty set ', '∅': ' empty set ',
+            '\\forall': ' for all ', '\\exists': ' there exists ',
+            '\\nexists': ' there does not exist ',
+            '\\therefore': ' therefore ', '\\because': ' because ',
+            '\\prime': ' prime ', '\\degree': ' degrees ', '^\\circ': ' degrees ',
+            '\\angle': ' angle ', '\\triangle': ' triangle ',
+            '\\perp': ' perpendicular to ', '⊥': ' perpendicular to ',
+            '\\parallel': ' parallel to ', '∥': ' parallel to ',
+            '\\neg': ' not ', '\\land': ' and ', '\\lor': ' or ',
+            '\\implies': ' implies ', '\\Rightarrow': ' implies ',
+            '\\rightarrow': ' approaches ', '\\to': ' approaches ', '→': ' approaches ',
+            '\\mapsto': ' maps to ', '\\leftarrow': ' left arrow ',
+            '\\hat': ' hat ', '\\vec': ' vector ', '\\bar': ' bar ',
+            '\\dot': ' dot ', '\\ddot': ' double dot ',
+            '\\textbf': '', '\\textit': '', '\\mathrm': '', '\\mathbf': '',
+            '\\mathit': '', '\\mathcal': '', '\\mathbb': '', '\\mathfrak': '',
+            '\\text': '', '\\partial': ' partial ', '\\nabla': ' del ',
+            '\\hbar': ' h bar ', '\\ell': ' ell ',
+            '\\Re': ' real part ', '\\Im': ' imaginary part ',
+            '\\aleph': ' aleph ',
+            '(': ' ', ')': ' ', '[': ' ', ']': ' ',
+            '\\left': '', '\\right': '',
+        };
+        Object.entries(symbols).forEach(([latex, speech]) => {
+            result = result.replace(new RegExp(latex.replace(/[{}[\]\\^$|?*+()]/g, '\\$&'), 'g'), speech);
+        });
+
+        // Handle fractions: \frac{a}{b}
+        result = result.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1 over $2");
+        result = result.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, "$1 over $2");
+
+        // Handle subscripts: x_{n} or x_n
+        result = result.replace(/_?\{?([a-zA-Z0-9]+)\}?_\{?([a-zA-Z0-9]+)\}?/g, "$1 subscript $2");
+
+        // Handle superscripts: x^{n} or x^n
+        result = result.replace(/\{?([a-zA-Z0-9]+)\}?(\^|\*\*)\{?([a-zA-Z0-9]+)\}?/g, (_, base, __, sup) => {
+            const powerName = sup === '2' ? 'squared' : sup === '3' ? 'cubed' : `power ${sup}`;
+            return `${base} to the ${powerName}`;
+        });
+
+        // Remove remaining backslashes and braces
+        result = result.replace(/\\/g, ' ');
+        result = result.replace(/[{}]/g, '');
+
+        // Clean up extra whitespace
+        return result.replace(/\s+/g, ' ').trim();
+    }, []);
+
+    // Speak text using speech synthesis
+    const speak = useCallback((text: string, slideIndex: number, part: "question" | "answer") => {
+        if (!text || !("speechSynthesis" in window)) {
+            setSpeakingSlide(null);
+            setSpeakingPart(null);
+            return;
+        }
+
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const cleanText = stripMathSyntax(text);
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        utterance.onstart = () => {
+            setSpeakingSlide(slideIndex);
+            setSpeakingPart(part);
+        };
+        utterance.onend = () => {
+            setSpeakingSlide(null);
+            setSpeakingPart(null);
+        };
+        utterance.onerror = () => {
+            setSpeakingSlide(null);
+            setSpeakingPart(null);
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }, [stripMathSyntax]);
+
+    // Stop speaking
+    const stopSpeaking = useCallback(() => {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        setSpeakingSlide(null);
+        setSpeakingPart(null);
+    }, []);
 
     useEffect(() => {
         async function load() {
@@ -537,9 +704,32 @@ export default function SlidesPage() {
                                                 className="w-full text-center space-y-6"
                                             >
                                                 <div className="flex flex-col items-center gap-3">
-                                                    <h3 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
-                                                        {renderMathInText(slides[current]?.question)}
-                                                    </h3>
+                                                    <div className="flex items-center gap-2">
+                                                        <h3 className="text-xl md:text-2xl font-bold text-foreground leading-relaxed">
+                                                            {renderMathInText(slides[current]?.question)}
+                                                        </h3>
+                                                        {speakingSlide === current && speakingPart === "question" ? (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                onClick={() => stopSpeaking()}
+                                                                className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                                                                title="Stop"
+                                                            >
+                                                                <VolumeX className="h-4 w-4" />
+                                                            </Button>
+                                                        ) : (
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                onClick={() => speak(slides[current]?.question, current, "question")}
+                                                                className="h-8 w-8 text-muted-foreground hover:text-primary shrink-0"
+                                                                title="Speak"
+                                                            >
+                                                                <Volume2 className="h-4 w-4" />
+                                                            </Button>
+                                                        )}
+                                                    </div>
                                                 </div>
                                                 <button
                                                     onClick={() => setShowAnswer((s) => !s)}
@@ -553,9 +743,32 @@ export default function SlidesPage() {
                                                         animate={{ opacity: 1, scale: 1 }}
                                                         className="bg-primary/10 border border-primary/20 rounded-xl p-4"
                                                     >
-                                                        <p className="text-lg font-semibold text-foreground">
-                                                            {renderMathInText(slides[current]?.answer)}
-                                                        </p>
+                                                        <div className="flex items-start justify-center gap-2">
+                                                            <p className="text-lg font-semibold text-foreground">
+                                                                {renderMathInText(slides[current]?.answer)}
+                                                            </p>
+                                                            {speakingSlide === current && speakingPart === "answer" ? (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => stopSpeaking()}
+                                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive shrink-0"
+                                                                    title="Stop"
+                                                                >
+                                                                    <VolumeX className="h-4 w-4" />
+                                                                </Button>
+                                                            ) : (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => speak(slides[current]?.answer, current, "answer")}
+                                                                    className="h-8 w-8 text-muted-foreground hover:text-primary shrink-0"
+                                                                    title="Speak"
+                                                                >
+                                                                    <Volume2 className="h-4 w-4" />
+                                                                </Button>
+                                                            )}
+                                                        </div>
                                                     </motion.div>
                                                 )}
                                             </motion.div>
