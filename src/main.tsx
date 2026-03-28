@@ -8,6 +8,7 @@ import './i18n'
 import { ThemeProvider } from "@/components/theme-provider"
 import { HelmetProvider } from 'react-helmet-async'
 import { store, persistor } from './lib/store'
+import { VoiceSwitcher } from "@/components/voice-switcher"
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -15,6 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <PersistGate loading={null} persistor={persistor}>
         <HelmetProvider>
           <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+            <VoiceSwitcher />
             <App />
           </ThemeProvider>
         </HelmetProvider>

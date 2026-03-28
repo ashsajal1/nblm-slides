@@ -6,18 +6,7 @@ import { ModeToggle } from '../mode-toggle';
 import { LanguageSwitcher } from '../language-switcher';
 import { VoiceSwitcher } from '../voice-switcher';
 import Text from '../custom-ui/text';
-import {
-    Sparkles,
-    CreditCard,
-    BookOpen,
-    Newspaper,
-    LogIn,
-    UserPlus,
-    BarChart3,
-    Settings,
-    HelpCircle,
-    Presentation
-} from 'lucide-react';
+import { Presentation } from 'lucide-react';
 
 export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, handleClose: () => void }) {
     const { t } = useTranslation();
@@ -26,26 +15,8 @@ export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, hand
         {
             title: t("nav.main"),
             items: [
+                { to: "/", label: t("nav.home"), icon: <Presentation className="w-4 h-4" /> },
                 { to: "/slides", label: t("nav.slides"), icon: <Presentation className="w-4 h-4" /> },
-                { to: "/features", label: t("nav.features"), icon: <Sparkles className="w-4 h-4" /> },
-                { to: "/pricing", label: t("nav.pricing"), icon: <CreditCard className="w-4 h-4" /> },
-                { to: "/docs", label: t("nav.docs"), icon: <BookOpen className="w-4 h-4" /> },
-                { to: "/blog", label: t("nav.blog"), icon: <Newspaper className="w-4 h-4" /> },
-            ]
-        },
-        {
-            title: t("nav.account"),
-            items: [
-                { to: "/login", label: t("nav.login"), icon: <LogIn className="w-4 h-4" /> },
-                { to: "/signup", label: t("nav.signup"), icon: <UserPlus className="w-4 h-4" /> },
-            ]
-        },
-        {
-            title: t("nav.resources"),
-            items: [
-                { to: "/analytics", label: t("nav.analytics"), icon: <BarChart3 className="w-4 h-4" /> },
-                { to: "/settings", label: t("nav.settings"), icon: <Settings className="w-4 h-4" /> },
-                { to: "/help", label: t("nav.help"), icon: <HelpCircle className="w-4 h-4" /> },
             ]
         }
     ];
@@ -132,8 +103,8 @@ export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, hand
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: 0.1 * (index + itemIndex + 1) }}
                                         >
-                                            <Link 
-                                                to={item.to} 
+                                            <Link
+                                                to={item.to}
                                                 className='flex items-center gap-3 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all duration-200 hover:translate-x-1'
                                                 onClick={handleClose}
                                             >
