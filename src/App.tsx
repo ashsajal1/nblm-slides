@@ -1,12 +1,11 @@
 import { RouterProvider } from 'react-router-dom';
 import { router } from './routes';
-import ToastNotification from './components/ui/toast';
+import { AppToastProvider } from './components/ui/toaster';
 
 export default function App() {
   return (
-    <>
+    <AppToastProvider>
       <RouterProvider router={router} />
-      <ToastNotification />
-    </>
+    </AppToastProvider>
   )
 }

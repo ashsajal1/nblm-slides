@@ -23,6 +23,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useToast } from "@/components/ui/toaster";
 import {
     getAllDecks,
     getAllTopics,
@@ -102,6 +103,7 @@ function renderMathInText(text: string): React.ReactNode {
 
 export default function SlidesPage() {
     const { t } = useTranslation();
+    const { addToast } = useToast();
     const [decks, setDecks] = useState<FlashcardDeck[]>([]);
     const [topics, setTopics] = useState<Topic[]>([]);
     const [loading, setLoading] = useState(true);
@@ -158,7 +160,8 @@ export default function SlidesPage() {
         if (activeDeck?.id === id) {
             setActiveDeck(null);
         }
-    }, [activeDeck]);
+        addToast('success', 'Deck deleted successfully');
+    }, [activeDeck, addToast]);
 
     const handleStartEditDeck = (deck: FlashcardDeck) => {
         setEditDeckTitle(deck.title);
@@ -177,7 +180,8 @@ export default function SlidesPage() {
         setDecks(await getAllDecks());
         setActiveDeck(updated);
         setShowDeckEditDialog(false);
-    }, [activeDeck, editDeckTitle, editDeckTopic]);
+        addToast('success', 'Deck updated successfully');
+    }, [activeDeck, editDeckTitle, editDeckTopic, addToast]);
 
     const handleStartEditSlide = (index: number) => {
         const slide = slides[index];
@@ -200,7 +204,8 @@ export default function SlidesPage() {
         setEditSlideIndex(null);
         setEditQuestion("");
         setEditAnswer("");
-    }, [editSlideIndex, editQuestion, editAnswer, activeDeck]);
+        addToast('success', 'Slide updated successfully');
+    }, [editSlideIndex, editQuestion, editAnswer, activeDeck, addToast]);
 
     const handleAddSlide = useCallback(async () => {
         if (!activeDeck || !addQuestion.trim()) return;
@@ -215,7 +220,8 @@ export default function SlidesPage() {
         setAddQuestion("");
         setAddAnswer("");
         setShowAddSlideDialog(false);
-    }, [addQuestion, addAnswer, activeDeck]);
+        addToast('success', 'Slide added successfully');
+    }, [addQuestion, addAnswer, activeDeck, addToast]);
 
     const handleDeleteSlide = useCallback(async (index: number) => {
         if (!activeDeck) return;
@@ -224,7 +230,8 @@ export default function SlidesPage() {
         setDecks(allDecks);
         setActiveDeck(allDecks.find((d) => d.id === activeDeck.id) ?? null);
         setCurrent((prev) => Math.max(0, prev - 1));
-    }, [activeDeck]);
+        addToast('success', 'Slide deleted successfully');
+    }, [activeDeck, addToast]);
 
     const handleCreateTopic = useCallback(async () => {
         if (!newTopicLabel.trim()) return;
@@ -235,12 +242,14 @@ export default function SlidesPage() {
         setTopics(allTopics);
         setNewTopicLabel("");
         setShowTopicDialog(false);
-    }, [newTopicLabel]);
+        addToast('success', 'Topic created successfully');
+    }, [newTopicLabel, addToast]);
 
     const handleDeleteTopic = useCallback(async (id: string) => {
         await deleteTopic(id);
         setTopics(await getAllTopics());
-    }, []);
+        addToast('success', 'Topic deleted successfully');
+    }, [addToast]);
 
     const paginate = useCallback((newDirection: number) => {
         setShowAnswer(false);
