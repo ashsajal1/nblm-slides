@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ModeToggle } from '../mode-toggle';
 import { LanguageSwitcher } from '../language-switcher';
+import { VoiceSwitcher } from '../voice-switcher';
 import Text from '../custom-ui/text';
 import {
     Sparkles,
@@ -81,6 +82,13 @@ export default function SideNav({ isOpen, handleClose }: { isOpen: boolean, hand
                                 <Text className='text-xl font-bold text-primary' label={t("nav.brand")} />
                             </motion.div>
                             <div className="flex items-center gap-2">
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    <VoiceSwitcher />
+                                </motion.div>
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}

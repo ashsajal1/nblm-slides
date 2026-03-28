@@ -7,6 +7,7 @@ import Text from "../custom-ui/text";
 import SideNav from "./side-nav";
 import { ModeToggle } from "../mode-toggle";
 import { LanguageSwitcher } from "../language-switcher";
+import { VoiceSwitcher } from "../voice-switcher";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
@@ -87,8 +88,8 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           <div className="hidden md:flex items-center gap-2">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link 
-                to='/login' 
+              <Link
+                to='/login'
                 className="text-sm font-medium text-gray-600 hover:text-primary dark:text-gray-400 dark:hover:text-primary transition-colors px-3 py-2"
               >
                 {t("nav.login")}
@@ -102,7 +103,8 @@ export default function Navbar() {
               </Link>
             </motion.div>
           </div>
-          
+
+          <VoiceSwitcher />
           <LanguageSwitcher />
           <ModeToggle />
           <motion.div

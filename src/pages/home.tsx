@@ -1,12 +1,14 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Volume2, VolumeX, RotateCcw } from "lucide-react";
 import Seo from '../components/Seo';
 import Particles from "@/components/custom-ui/particles";
 import { FlashcardDeck, type DeckTopic, saveDeck, setActiveDeckId, getAllDecks } from "@/lib/db/indexedDB";
 import { useDecks } from "@/hooks/useDecks";
 import { useSlides } from "@/hooks/useSlides";
 import { useKeyboardAndFileHandlers } from "@/hooks/useKeyboardAndFileHandlers";
+import { useSelectedVoice } from "@/hooks/useSelectedVoice";
 import { parseCSV, type ParsedCSV } from "@/lib/csv-parser";
 import { Header } from "@/components/partials/Header";
 import { DeckTabs } from "@/components/partials/DeckTabs";
@@ -18,6 +20,7 @@ import { SlideNavigator } from "@/components/partials/SlideNavigator";
 import { EmptyState } from "@/components/partials/EmptyState";
 import { DeckSetupDialog } from "@/components/partials/DeckSetupDialog";
 import { DeleteConfirmationDialog } from "@/components/partials/DeleteConfirmationDialog";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
     const { t } = useTranslation();
@@ -39,6 +42,12 @@ export default function Home() {
     const [setupTitle, setSetupTitle] = useState("");
     const [setupTopic, setSetupTopic] = useState<DeckTopic>("study");
     const [deckToDelete, setDeckToDelete] = useState<string | null>(null);
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [autoSpeak, setAutoSpeak] = useState(false);
+    const [playStep, setPlayStep] = useState<0 | 1 | 2 | 3>(0);
+    const questionCallbackCalled = useRef(false);
+    const answerCallbackCalled = useRef(false);
+    const selectedVoice = useSelectedVoice();
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
@@ -54,6 +63,163 @@ export default function Home() {
         paginateVertical,
         reset,
     } = useSlides(slides.length);
+
+    // Strip KaTeX syntax from text for speech
+    const stripMathSyntax = useCallback((text: string): string => {
+        if (!text) return "";
+        return text
+            .replace(/\$\$(.+?)\$\$/g, "$1")
+            .replace(/\\\[([\s\S]*?)\\\]/g, "$1")
+            .replace(/\$(.+?)\$/g, "$1")
+            .replace(/\\\((.+?)\\\)/g, "$1")
+            .replace(/\\frac{([^}]+)}{([^}]+)}/g, "$1 divided by $2")
+            .replace(/\\sqrt{([^}]+)}/g, "square root of $1")
+            .replace(/\^/g, " to the power of ");
+    }, []);
+
+    // Speak text using speech synthesis
+    const speak = useCallback((text: string, onEnd?: () => void) => {
+        if (!text || !("speechSynthesis" in window)) {
+            // If speech not available, call onEnd immediately
+            if (onEnd) onEnd();
+            return;
+        }
+
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const cleanText = stripMathSyntax(text);
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
+
+        utterance.onstart = () => {
+            setIsSpeaking(true);
+        };
+        utterance.onend = () => {
+            setIsSpeaking(false);
+            if (onEnd) onEnd();
+        };
+        utterance.onerror = () => {
+            setIsSpeaking(false);
+            if (onEnd) onEnd();
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }, [stripMathSyntax, selectedVoice]);
+
+    // Stop speaking
+    const stopSpeaking = useCallback(() => {
+        if (!("speechSynthesis" in window)) return;
+        window.speechSynthesis.cancel();
+        setIsSpeaking(false);
+    }, []);
+
+    // Toggle auto-speak
+    const toggleAutoSpeak = useCallback(() => {
+        setAutoSpeak((prev) => {
+            const newValue = !prev;
+            if (!newValue) {
+                stopSpeaking();
+            }
+            return newValue;
+        });
+    }, [stopSpeaking]);
+
+    // Reset to first slide
+    const resetToStart = useCallback(() => {
+        setAutoSpeak(false);
+        stopSpeaking();
+        setCurrent(0);
+        setShowAnswer(false);
+        setPlayStep(0);
+    }, [stopSpeaking, setCurrent, setShowAnswer]);
+
+    // Auto-speak and auto-advance logic
+    useEffect(() => {
+        if (!autoSpeak || slides.length === 0 || !slides[current]) return;
+
+        let timeoutId: NodeJS.Timeout;
+        let fallbackTimeoutId: NodeJS.Timeout;
+        const currentSlide = slides[current];
+
+        // Step 0: Speak question
+        if (playStep === 0 && !showAnswer && !isSpeaking && currentSlide?.question) {
+            questionCallbackCalled.current = false;
+            speak(currentSlide.question, () => {
+                if (!questionCallbackCalled.current) {
+                    questionCallbackCalled.current = true;
+                    setPlayStep(1);
+                }
+            });
+            // Fallback timeout in case speech callback doesn't fire
+            fallbackTimeoutId = setTimeout(() => {
+                if (!questionCallbackCalled.current) {
+                    questionCallbackCalled.current = true;
+                    setPlayStep(1);
+                }
+            }, 5000);
+        }
+        // Step 1: Show answer
+        else if (playStep === 1 && !showAnswer) {
+            setShowAnswer(true);
+            setPlayStep(2);
+        }
+        // Step 2: Speak answer
+        else if (playStep === 2 && showAnswer && !isSpeaking && currentSlide?.answer) {
+            answerCallbackCalled.current = false;
+            speak(currentSlide.answer, () => {
+                if (!answerCallbackCalled.current) {
+                    answerCallbackCalled.current = true;
+                    setPlayStep(3);
+                }
+            });
+            // Fallback timeout in case speech callback doesn't fire
+            fallbackTimeoutId = setTimeout(() => {
+                if (!answerCallbackCalled.current) {
+                    answerCallbackCalled.current = true;
+                    setPlayStep(3);
+                }
+            }, 5000);
+        }
+        // Step 3: Advance to next slide
+        else if (playStep === 3 && showAnswer) {
+            timeoutId = setTimeout(() => {
+                setCurrent((prev) => {
+                    const next = prev + 1;
+                    if (next >= slides.length) {
+                        setAutoSpeak(false);
+                        return 0;
+                    }
+                    return next;
+                });
+                setShowAnswer(false);
+                setPlayStep(0);
+                // Reset callback flags for next card
+                questionCallbackCalled.current = false;
+                answerCallbackCalled.current = false;
+            }, 800);
+        }
+
+        return () => {
+            if (timeoutId) clearTimeout(timeoutId);
+            if (fallbackTimeoutId) clearTimeout(fallbackTimeoutId);
+        };
+    }, [autoSpeak, current, slides.length, showAnswer, playStep, isSpeaking, setCurrent, setShowAnswer, speak, slides]);
+
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            if ("speechSynthesis" in window) {
+                window.speechSynthesis.cancel();
+            }
+        };
+    }, []);
 
     const handleFileUpload = useCallback(
         (file: File) => {
@@ -237,9 +403,45 @@ export default function Home() {
                         />
                     )}
 
-                    <div className="flex justify-center mb-6">
+                    <div className="flex justify-center mb-6 gap-4">
                         <UploadButton onFilesSelected={handleMultipleFileUpload} />
+                        {slides.length > 0 && (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={toggleAutoSpeak}
+                                    className={`h-10 w-10 rounded-full ${autoSpeak ? "bg-primary text-primary-foreground" : ""}`}
+                                    title={autoSpeak ? t("home.disableAutoSpeak") : t("home.enableAutoSpeak")}
+                                >
+                                    {isSpeaking ? (
+                                        <Volume2 className="h-5 w-5 animate-pulse" />
+                                    ) : autoSpeak ? (
+                                        <Volume2 className="h-5 w-5" />
+                                    ) : (
+                                        <VolumeX className="h-5 w-5" />
+                                    )}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    onClick={resetToStart}
+                                    className="h-10 w-10 rounded-full"
+                                    title={t("home.resetToStart")}
+                                >
+                                    <RotateCcw className="h-5 w-5" />
+                                </Button>
+                            </>
+                        )}
                     </div>
+
+                    {autoSpeak && slides.length > 0 && (
+                        <div className="flex justify-center mb-4">
+                            <p className="text-sm text-muted-foreground">
+                                {t("home.autoSwipeMode")}
+                            </p>
+                        </div>
+                    )}
 
                     <AnimatePresence>
                         {uploadError && (
