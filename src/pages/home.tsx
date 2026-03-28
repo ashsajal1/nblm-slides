@@ -111,7 +111,7 @@ export default function Home() {
         };
 
         window.speechSynthesis.speak(utterance);
-    }, [stripMathSyntax]);
+    }, [stripMathSyntax, selectedVoice]);
 
     // Stop speaking
     const stopSpeaking = useCallback(() => {
