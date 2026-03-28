@@ -128,7 +128,7 @@ export default function Home() {
             '\\arcsin': ' inverse sine ', '\\arccos': ' inverse cosine ', '\\arctan': ' inverse tan ',
             '\\sinh': ' hyperbolic sine ', '\\cosh': ' hyperbolic cosine ', '\\tanh': ' hyperbolic tan ',
             '\\frac': ' ', '\\dfrac': ' ',
-            '\\pm': ' plus or minus ', '\\mp': ' minus or plus ',
+            '\\pm': ' plus minus ', '\\mp': ' minus plus ',
             '\\approx': ' approximately ', '≈': ' approximately ',
             '\\equiv': ' equivalent to ', '≡': ' equivalent to ',
             '\\in': ' belongs to ', '\\ni': ' contains ',
@@ -170,10 +170,11 @@ export default function Home() {
         // Handle subscripts: x_{n} or x_n
         result = result.replace(/_?\{?([a-zA-Z0-9]+)\}?_\{?([a-zA-Z0-9]+)\}?/g, "$1 subscript $2");
 
-        // Handle superscripts: x^{n} or x^n
+        // Handle superscripts: x^{n} or x^n - college style: "x squared", "x cube", "x to the power n"
         result = result.replace(/\{?([a-zA-Z0-9]+)\}?(\^|\*\*)\{?([a-zA-Z0-9]+)\}?/g, (_, base, __, sup) => {
-            const powerName = sup === '2' ? 'squared' : sup === '3' ? 'cubed' : `power ${sup}`;
-            return `${base} to the ${powerName}`;
+            if (sup === '2') return `${base} squared`;
+            if (sup === '3') return `${base} cube`;
+            return `${base} to the power ${sup}`;
         });
 
         // Remove remaining backslashes and braces
