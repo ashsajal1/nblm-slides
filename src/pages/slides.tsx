@@ -150,29 +150,29 @@ export default function SlidesPage() {
         result = result.replace(/\$([^$]+?)\$/g, "$1");
         result = result.replace(/\\\((.+?)\\\)/g, "$1");
         
-        // Greek letters (lowercase)
+        // Greek letters (lowercase) - with TTS-friendly phonetic pronunciations
         const greekLetters: Record<string, string> = {
-            '\\alpha': 'alpha ', '\\beta': 'beta ', '\\gamma': 'gamma ',
-            '\\delta': 'delta ', '\\epsilon': 'epsilon ', '\\varepsilon': 'epsilon ',
-            '\\zeta': 'zeta ', '\\eta': 'eta ', '\\theta': 'theta ',
-            '\\vartheta': 'theta ', '\\iota': 'iota ', '\\kappa': 'kappa ',
-            '\\lambda': 'lambda ', '\\mu': 'mu ', '\\nu': 'nu ',
-            '\\xi': 'xi ', '\\pi': 'pi ', '\\varpi': 'pi ',
-            '\\rho': 'rho ', '\\varrho': 'rho ', '\\sigma': 'sigma ',
-            '\\varsigma': 'sigma ', '\\tau': 'tau ', '\\upsilon': 'upsilon ',
-            '\\phi': 'phi ', '\\varphi': 'phi ', '\\chi': 'chi ',
-            '\\psi': 'psi ', '\\omega': 'omega ',
+            '\\alpha': 'al fa ', '\\beta': 'bay ta ', '\\gamma': 'gam ma ',
+            '\\delta': 'del ta ', '\\epsilon': 'ep si lon ', '\\varepsilon': 'ep si lon ',
+            '\\zeta': 'zey ta ', '\\eta': 'ay ta ', '\\theta': 'thay ta ',
+            '\\vartheta': 'thay ta ', '\\iota': 'eye oh ta ', '\\kappa': 'cap pa ',
+            '\\lambda': 'lam da ', '\\mu': 'mew ', '\\nu': 'new ',
+            '\\xi': 'zi ', '\\pi': 'pi ', '\\varpi': 'par pi ',
+            '\\rho': 'rho ', '\\varrho': 'rho ', '\\sigma': 'sig ma ',
+            '\\varsigma': 'sig ma ', '\\tau': 'tow ', '\\upsilon': 'up si lon ',
+            '\\phi': 'fi ', '\\varphi': 'fi ', '\\chi': 'ki ',
+            '\\psi': 'si ', '\\omega': 'oh may ga ',
         };
         Object.entries(greekLetters).forEach(([latex, name]) => {
             result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
         });
 
-        // Greek letters (uppercase)
+        // Greek letters (uppercase) - with TTS-friendly phonetic pronunciations
         const greekLettersUppercase: Record<string, string> = {
-            '\\Delta': 'Delta ', '\\Theta': 'Theta ', '\\Lambda': 'Lambda ',
-            '\\Xi': 'Xi ', '\\Pi': 'Pi ', '\\Sigma': 'Sigma ',
-            '\\Upsilon': 'Upsilon ', '\\Phi': 'Phi ', '\\Psi': 'Psi ',
-            '\\Omega': 'Omega ', '\\Gamma': 'Gamma ',
+            '\\Delta': 'Del ta ', '\\Theta': 'Thay ta ', '\\Lambda': 'Lam da ',
+            '\\Xi': 'Zi ', '\\Pi': 'Pi ', '\\Sigma': 'Sig ma ',
+            '\\Upsilon': 'Up si lon ', '\\Phi': 'Fi ', '\\Psi': 'Si ',
+            '\\Omega': 'Oh may ga ', '\\Gamma': 'Gam ma ',
         };
         Object.entries(greekLettersUppercase).forEach(([latex, name]) => {
             result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
