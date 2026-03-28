@@ -178,34 +178,33 @@ export default function SlidesPage() {
             result = result.replace(new RegExp(latex + '(?![a-zA-Z])', 'g'), ` ${name} `);
         });
 
-        // Operators and symbols
+        // Operators and symbols - College/academic pronunciation style
         const symbols: Record<string, string> = {
             '+': ' plus ', '-': ' minus ', '=': ' equals ',
-            '≠': ' not equals ', '\\neq': ' not equals ',
+            '≠': ' not equal to ', '\\neq': ' not equal to ', '\\ne': ' not equal to ',
             '<': ' less than ', '>': ' greater than ',
             '≤': ' less than or equal to ', '\\leq': ' less than or equal to ',
             '≥': ' greater than or equal to ', '\\geq': ' greater than or equal to ',
-            '×': ' times ', '\\times': ' times ',
-            '÷': ' divided by ', '\\div': ' divided by ',
-            '·': ' dot ', '\\cdot': ' dot ',
-            '*': ' times ', '/': ' divided by ',
+            '×': ' into ', '\\times': ' into ',
+            '÷': ' by ', '\\div': ' by ',
+            '·': ' times ', '\\cdot': ' times ',
+            '*': ' times ', '/': ' by ',
             '^': ' to the power of ',
-            '\\sqrt': ' square root of ', '√': ' square root of ',
+            '\\sqrt': ' root of ', '√': ' root of ',
             '\\infty': ' infinity ', '∞': ' infinity ',
             '\\int': ' integral ', '\\oint': ' contour integral ',
-            '\\sum': ' sum ', '\\prod': ' product ',
-            '\\lim': ' limit ', '\\log': ' log ', '\\ln': ' natural log ',
-            '\\sin': ' sine ', '\\cos': ' cosine ', '\\tan': ' tangent ',
-            '\\csc': ' cosecant ', '\\sec': ' secant ', '\\cot': ' cotangent ',
-            '\\arcsin': ' arc sine ', '\\arccos': ' arc cosine ', '\\arctan': ' arc tangent ',
-            '\\sinh': ' hyperbolic sine ', '\\cosh': ' hyperbolic cosine ', '\\tanh': ' hyperbolic tangent ',
-            '\\frac': ' fraction ', '\\dfrac': ' fraction ',
+            '\\sum': ' summation ', '\\prod': ' product ',
+            '\\lim': ' limit ', '\\log': ' log ', '\\ln': ' ln ',
+            '\\sin': ' sine ', '\\cos': ' cosine ', '\\tan': ' tan ',
+            '\\csc': ' cosec ', '\\sec': ' sec ', '\\cot': ' cot ',
+            '\\arcsin': ' inverse sine ', '\\arccos': ' inverse cosine ', '\\arctan': ' inverse tan ',
+            '\\sinh': ' hyperbolic sine ', '\\cosh': ' hyperbolic cosine ', '\\tanh': ' hyperbolic tan ',
+            '\\frac': ' ', '\\dfrac': ' ',
             '\\pm': ' plus or minus ', '\\mp': ' minus or plus ',
             '\\approx': ' approximately ', '≈': ' approximately ',
             '\\equiv': ' equivalent to ', '≡': ' equivalent to ',
-            '\\ne': ' not equal to ',
-            '\\in': ' in ', '\\ni': ' contains ',
-            '\\notin': ' not in ', '\\subset': ' subset of ',
+            '\\in': ' belongs to ', '\\ni': ' contains ',
+            '\\notin': ' does not belong to ', '\\subset': ' subset of ',
             '\\supset': ' superset of ', '\\subseteq': ' subset of or equal to ',
             '\\supseteq': ' superset of or equal to ',
             '\\cup': ' union ', '\\cap': ' intersection ',
@@ -219,7 +218,7 @@ export default function SlidesPage() {
             '\\parallel': ' parallel to ', '∥': ' parallel to ',
             '\\neg': ' not ', '\\land': ' and ', '\\lor': ' or ',
             '\\implies': ' implies ', '\\Rightarrow': ' implies ',
-            '\\rightarrow': ' approaches ', '\\to': ' approaches ', '→': ' approaches ',
+            '\\rightarrow': ' tends to ', '\\to': ' tends to ', '→': ' tends to ',
             '\\mapsto': ' maps to ', '\\leftarrow': ' left arrow ',
             '\\hat': ' hat ', '\\vec': ' vector ', '\\bar': ' bar ',
             '\\dot': ' dot ', '\\ddot': ' double dot ',
@@ -236,9 +235,9 @@ export default function SlidesPage() {
             result = result.replace(new RegExp(latex.replace(/[{}[\]\\^$|?*+()]/g, '\\$&'), 'g'), speech);
         });
 
-        // Handle fractions: \frac{a}{b}
-        result = result.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1 over $2");
-        result = result.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, "$1 over $2");
+        // Handle fractions: \frac{a}{b} - reads as "a by b" in college style
+        result = result.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1 by $2");
+        result = result.replace(/\\dfrac\{([^}]+)\}\{([^}]+)\}/g, "$1 by $2");
 
         // Handle subscripts: x_{n} or x_n
         result = result.replace(/_?\{?([a-zA-Z0-9]+)\}?_\{?([a-zA-Z0-9]+)\}?/g, "$1 subscript $2");
