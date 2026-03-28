@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Mic, Loader2 } from 'lucide-react';
+import { notifyVoiceChange } from '@/hooks/useSelectedVoice';
 
 export interface VoiceOption {
     name: string;
@@ -82,9 +83,9 @@ export function VoiceSwitcher() {
     const handleVoiceChange = (voice: SpeechSynthesisVoice) => {
         setSelectedVoice(voice);
         localStorage.setItem('selectedVoice', voice.name);
+        notifyVoiceChange(voice);
         setIsOpen(false);
 
-        // Test the voice
         const utterance = new SpeechSynthesisUtterance('Hello');
         utterance.voice = voice;
         window.speechSynthesis.speak(utterance);

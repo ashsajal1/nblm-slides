@@ -8,6 +8,7 @@ import { FlashcardDeck, type DeckTopic, saveDeck, setActiveDeckId, getAllDecks }
 import { useDecks } from "@/hooks/useDecks";
 import { useSlides } from "@/hooks/useSlides";
 import { useKeyboardAndFileHandlers } from "@/hooks/useKeyboardAndFileHandlers";
+import { useSelectedVoice } from "@/hooks/useSelectedVoice";
 import { parseCSV, type ParsedCSV } from "@/lib/csv-parser";
 import { Header } from "@/components/partials/Header";
 import { DeckTabs } from "@/components/partials/DeckTabs";
@@ -46,23 +47,7 @@ export default function Home() {
     const [playStep, setPlayStep] = useState<0 | 1 | 2 | 3>(0);
     const questionCallbackCalled = useRef(false);
     const answerCallbackCalled = useRef(false);
-    const selectedVoice = useRef<SpeechSynthesisVoice | null>(null);
-
-    // Load selected voice from localStorage
-    useEffect(() => {
-        const loadVoice = () => {
-            const voices = window.speechSynthesis.getVoices();
-            const savedVoiceName = localStorage.getItem('selectedVoice');
-            if (savedVoiceName) {
-                selectedVoice.current = voices.find((v) => v.name === savedVoiceName) || null;
-            }
-        };
-
-        loadVoice();
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = loadVoice;
-        }
-    }, []);
+    const selectedVoice = useSelectedVoice();
 
     const activeDeck = decks.find((d) => d.id === activeDeckId) ?? null;
     const slides = Array.isArray(activeDeck?.slides) ? activeDeck.slides : [];
@@ -93,7 +78,7 @@ export default function Home() {
     }, []);
 
     // Speak text using speech synthesis
-    const speak = useCallback((text: string, type: 'question' | 'answer' = 'question', onEnd?: () => void) => {
+    const speak = useCallback((text: string, onEnd?: () => void) => {
         if (!text || !("speechSynthesis" in window)) {
             // If speech not available, call onEnd immediately
             if (onEnd) onEnd();
@@ -109,9 +94,8 @@ export default function Home() {
         utterance.pitch = 1;
         utterance.volume = 1;
         
-        // Use selected voice
-        if (selectedVoice.current) {
-            utterance.voice = selectedVoice.current;
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
         }
 
         utterance.onstart = () => {
@@ -167,7 +151,7 @@ export default function Home() {
         // Step 0: Speak question
         if (playStep === 0 && !showAnswer && !isSpeaking && currentSlide?.question) {
             questionCallbackCalled.current = false;
-            speak(currentSlide.question, 'question', () => {
+            speak(currentSlide.question, () => {
                 if (!questionCallbackCalled.current) {
                     questionCallbackCalled.current = true;
                     setPlayStep(1);
@@ -189,7 +173,7 @@ export default function Home() {
         // Step 2: Speak answer
         else if (playStep === 2 && showAnswer && !isSpeaking && currentSlide?.answer) {
             answerCallbackCalled.current = false;
-            speak(currentSlide.answer, 'answer', () => {
+            speak(currentSlide.answer, () => {
                 if (!answerCallbackCalled.current) {
                     answerCallbackCalled.current = true;
                     setPlayStep(3);
